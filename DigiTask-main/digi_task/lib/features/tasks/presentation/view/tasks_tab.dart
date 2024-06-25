@@ -3,6 +3,7 @@ import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:digi_task/features/tasks/presentation/notifier/task_notifier.dart';
 import 'package:digi_task/features/tasks/presentation/notifier/task_state.dart';
+import 'package:digi_task/features/tasks/presentation/view/problem_task.dart';
 import 'package:digi_task/shared/widgets/user_task_card.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,7 +39,9 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
               if (value == 1) {
                 context.read<TaskNotifier>().fetchTasks(queryType: "problem");
               } else {
-                context.read<TaskNotifier>().fetchTasks(queryType: "connection");
+                context
+                    .read<TaskNotifier>()
+                    .fetchTasks(queryType: "connection");
               }
             },
             labelColor: context.colors.primaryColor50,
@@ -67,58 +70,135 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
             scrollDirection: Axis.horizontal,
             itemCount: 4,
             itemBuilder: (context, index) {
-              final texts = ['Hamisi', 'Gözləmədə olan', 'Qəbul edilən', 'Keçmiş'];
+              final texts = [
+                'Hamisi',
+                'Gözləmədə olan',
+                'Qəbul edilən',
+                'Keçmiş'
+              ];
               return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: RawChip(
-                    onPressed: () {
+                  padding: const EdgeInsets.only(right: 8),
+                  child: GestureDetector(
+                    onTap: () {
                       setState(() {
                         selecteIndex = index;
                       });
                       if (tabController.index == 0) {
                         switch (index) {
                           case 0:
-                            context.read<TaskNotifier>().fetchTasks(queryType: "connection");
+                            context
+                                .read<TaskNotifier>()
+                                .fetchTasks(queryType: "connection");
                             break;
                           case 1:
-                            context.read<TaskNotifier>().fetchTasks(queryStatus: "waiting", queryType: "connection");
+                            context.read<TaskNotifier>().fetchTasks(
+                                queryStatus: "waiting",
+                                queryType: "connection");
                             break;
                           case 2:
-                            context.read<TaskNotifier>().fetchTasks(queryStatus: "inprogress", queryType: "connection");
+                            context.read<TaskNotifier>().fetchTasks(
+                                queryStatus: "inprogress",
+                                queryType: "connection");
                             break;
                           case 3:
-                            context.read<TaskNotifier>().fetchTasks(queryStatus: "completed", queryType: "connection");
+                            context.read<TaskNotifier>().fetchTasks(
+                                queryStatus: "completed",
+                                queryType: "connection");
                             break;
                         }
                       }
                       if (tabController.index == 1) {
                         switch (index) {
-                        case 0:
-                            context.read<TaskNotifier>().fetchTasks(queryType: "problem");
-                          break;
-                        case 1:
-                            context.read<TaskNotifier>().fetchTasks(queryStatus: "waiting", queryType: "problem");
-                          break;
-                        case 2:
-                            context.read<TaskNotifier>().fetchTasks(queryStatus: "inprogress", queryType: "problem");
-                          break;
-                        case 3:
-                            context.read<TaskNotifier>().fetchTasks(queryStatus: "completed", queryType: "problem");
-                          break;
+                          case 0:
+                            context
+                                .read<TaskNotifier>()
+                                .fetchTasks(queryType: "problem");
+                            break;
+                          case 1:
+                            context.read<TaskNotifier>().fetchTasks(
+                                queryStatus: "waiting", queryType: "problem");
+                            break;
+                          case 2:
+                            context.read<TaskNotifier>().fetchTasks(
+                                queryStatus: "inprogress",
+                                queryType: "problem");
+                            break;
+                          case 3:
+                            context.read<TaskNotifier>().fetchTasks(
+                                queryStatus: "completed", queryType: "problem");
+                            break;
+                        }
                       }
-                      }
-                     
                     },
-                    showCheckmark: false,
-                    label: Text(texts[index]),
-                    labelStyle: context.typography.overlineSemiBold
-                        .copyWith(color: selecteIndex == index ? Colors.white : context.colors.primaryColor50),
-                    labelPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    backgroundColor: Colors.white,
-                    selectedColor: context.colors.primaryColor50,
-                    selected: selecteIndex == index,
-                    shape: const StadiumBorder(side: BorderSide(color: Colors.transparent))),
-              );
+                    child: RawChip(
+                        onPressed: () {
+                          setState(() {
+                            selecteIndex = index;
+                          });
+                          if (tabController.index == 0) {
+                            switch (index) {
+                              case 0:
+                                context
+                                    .read<TaskNotifier>()
+                                    .fetchTasks(queryType: "connection");
+                                break;
+                              case 1:
+                                context.read<TaskNotifier>().fetchTasks(
+                                    queryStatus: "waiting",
+                                    queryType: "connection");
+                                break;
+                              case 2:
+                                context.read<TaskNotifier>().fetchTasks(
+                                    queryStatus: "inprogress",
+                                    queryType: "connection");
+                                break;
+                              case 3:
+                                context.read<TaskNotifier>().fetchTasks(
+                                    queryStatus: "completed",
+                                    queryType: "connection");
+                                break;
+                            }
+                          }
+                          if (tabController.index == 1) {
+                            switch (index) {
+                              case 0:
+                                context
+                                    .read<TaskNotifier>()
+                                    .fetchTasks(queryType: "problem");
+                                break;
+                              case 1:
+                                context.read<TaskNotifier>().fetchTasks(
+                                    queryStatus: "waiting",
+                                    queryType: "problem");
+                                break;
+                              case 2:
+                                context.read<TaskNotifier>().fetchTasks(
+                                    queryStatus: "inprogress",
+                                    queryType: "problem");
+                                break;
+                              case 3:
+                                context.read<TaskNotifier>().fetchTasks(
+                                    queryStatus: "completed",
+                                    queryType: "problem");
+                                break;
+                            }
+                          }
+                        },
+                        showCheckmark: false,
+                        label: Text(texts[index]),
+                        labelStyle: context.typography.overlineSemiBold
+                            .copyWith(
+                                color: selecteIndex == index
+                                    ? Colors.white
+                                    : context.colors.primaryColor50),
+                        labelPadding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
+                        backgroundColor: Colors.white,
+                        selectedColor: context.colors.primaryColor50,
+                        selected: selecteIndex == index,
+                        shape: const StadiumBorder(
+                            side: BorderSide(color: Colors.transparent))),
+                  ));
             },
           ),
         ),
@@ -139,15 +219,202 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
                   itemBuilder: (context, index) {
                     print(taskNotifier.tasks?.length);
                     final nowDateTime = DateTime.now();
-                    final dateTime = DateTime.parse(taskNotifier.tasks?[index].date ?? '');
+                    final dateTime =
+                        DateTime.parse(taskNotifier.tasks?[index].date ?? '');
                     String formattedDate = DateFormat('MMM d').format(dateTime);
-                    String nowFormattedDate = DateFormat('MMM d').format(nowDateTime);
+                    String nowFormattedDate =
+                        DateFormat('MMM d').format(nowDateTime);
                     return Padding(
-                        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 24),
+                      padding: const EdgeInsets.only(
+                          left: 16, right: 16, bottom: 24),
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                insetPadding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Material(
+                                  borderRadius: BorderRadius.circular(24),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 26.0, horizontal: 16),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Center(
+                                            child: Text(
+                                              "Servis növü",
+                                              style: context
+                                                  .typography.subtitle1Medium,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Hansı anketi doldurursunuz?',
+                                            style: context
+                                                .typography.body2Regular
+                                                .copyWith(
+                                              color:
+                                                  context.colors.neutralColor50,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 24),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    padding:
+                                                        WidgetStateProperty.all(
+                                                            const EdgeInsets
+                                                                .all(16)),
+                                                    shape:
+                                                        WidgetStateProperty.all(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        side: const BorderSide(
+                                                            width: 4,
+                                                            color:
+                                                                Colors.yellow),
+                                                      ),
+                                                    ),
+                                                    backgroundColor:
+                                                        WidgetStateProperty.all(
+                                                            Colors.white),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProblemTask(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    'Tv',
+                                                    style: context.typography
+                                                        .body2SemiBold
+                                                        .copyWith(
+                                                      color: context.colors
+                                                          .primaryColor50,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16),
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    padding:
+                                                        WidgetStateProperty.all(
+                                                            const EdgeInsets
+                                                                .all(16)),
+                                                    shape:
+                                                        WidgetStateProperty.all(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        side: const BorderSide(
+                                                            width: 4,
+                                                            color:
+                                                                Colors.yellow),
+                                                      ),
+                                                    ),
+                                                    backgroundColor:
+                                                        WidgetStateProperty.all(
+                                                            Colors.white),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProblemTask(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    'İnternet',
+                                                    style: context.typography
+                                                        .body2SemiBold
+                                                        .copyWith(
+                                                      color: context.colors
+                                                          .primaryColor50,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16),
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    padding:
+                                                        WidgetStateProperty.all(
+                                                            const EdgeInsets
+                                                                .all(16)),
+                                                    shape:
+                                                        WidgetStateProperty.all(
+                                                      RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        side: const BorderSide(
+                                                            width: 4,
+                                                            color:
+                                                                Colors.yellow),
+                                                      ),
+                                                    ),
+                                                    backgroundColor:
+                                                        WidgetStateProperty.all(
+                                                            Colors.white),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProblemTask(),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: Text(
+                                                    'Voice',
+                                                    style: context.typography
+                                                        .body2SemiBold
+                                                        .copyWith(
+                                                      color: context.colors
+                                                          .primaryColor50,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
                         child: UserTaskCard(
                           iconRow: Row(
                             children: [
-                              if (taskNotifier.tasks?[index].isInternet == true) ...[
+                              if (taskNotifier.tasks?[index].isInternet ==
+                                  true) ...[
                                 ServiceType(
                                   image: IconPath.internet.toPathSvg,
                                   title: "Internet",
@@ -159,7 +426,8 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
                                   title: "Tv",
                                 ),
                               ],
-                              if (taskNotifier.tasks?[index].isVoice == true) ...[
+                              if (taskNotifier.tasks?[index].isVoice ==
+                                  true) ...[
                                 ServiceType(
                                   image: IconPath.voice.toPathSvg,
                                   title: "Voice",
@@ -167,18 +435,24 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
                               ],
                             ],
                           ),
-                          name: taskNotifier.tasks?[index].firstName ?? 'Not found user',
+                          name: taskNotifier.tasks?[index].firstName ??
+                              'Not found user',
                           time: formattedDate == nowFormattedDate
                               ? 'Bu gün, ${taskNotifier.tasks?[index].time}'
                               : '$formattedDate, ${taskNotifier.tasks?[index].time}',
                           location: taskNotifier.tasks?[index].location ?? '',
-                          number: taskNotifier.tasks?[index].contactNumber ?? '',
+                          number:
+                              taskNotifier.tasks?[index].contactNumber ?? '',
                           status: taskNotifier.tasks?[index].status ?? '',
                           notifier: notifier,
-                          group: (taskNotifier.tasks?[index].group?.isNotEmpty ?? false)
+                          group: (taskNotifier
+                                      .tasks?[index].group?.isNotEmpty ??
+                                  false)
                               ? '${taskNotifier.tasks?[index].group?.first.group}'
                               : "Empty group",
-                        ));
+                        ),
+                      ),
+                    );
                   },
                 ),
               );

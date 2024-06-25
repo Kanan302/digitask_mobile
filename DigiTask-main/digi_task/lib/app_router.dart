@@ -141,7 +141,7 @@ final class AppRouter {
                 builder: (context, state) => ChangeNotifierProvider(
                   create: (context) => GetIt.instance<ProfileNotifier>()..getUserInformation(),
                   child: const ProfileTab()
-                ),
+                ), 
               ),
             GoRoute(
               path: AppRoutes.anbar.path,
@@ -151,6 +151,7 @@ final class AppRouter {
                 child: const AnbarView(),
               ),
             ),
+            
           ],
         ),
        

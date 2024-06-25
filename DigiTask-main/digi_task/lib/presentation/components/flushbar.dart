@@ -2,7 +2,8 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:flutter/material.dart';
 
-void openFlushbar(BuildContext context, {message, required String title, required Color color}) {
+void openFlushbar(BuildContext context,
+    {message, required String title, required Color color}) {
   Flushbar(
     animationDuration: const Duration(milliseconds: 800),
     backgroundColor: color,
