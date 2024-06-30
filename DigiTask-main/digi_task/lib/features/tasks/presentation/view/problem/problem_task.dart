@@ -1,3 +1,5 @@
+
+import 'package:digi_task/features/tasks/presentation/view/problem/detail_problem.dart';
 import 'package:flutter/material.dart';
 
 class ProblemTask extends StatelessWidget {
@@ -30,34 +32,92 @@ class ProblemTask extends StatelessWidget {
           child: Container(
             color: Colors.white,
             child: Column(
-              children: List.generate(
-                mockData.length,
-                (index) {
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: mockData[index]['title'] as String,
-                        labelStyle: const TextStyle(color: Colors.black),
-                        prefixIcon: mockData[index]['icon'] != null
-                            ? Icon(
-                                mockData[index]['icon'] as IconData,
-                                color: Colors.blue,
-                              )
-                            : null,
-                        suffix: mockData[index]['title'] == 'Servis'
-                            ? Text(
-                                serviceType,
-                                style: const TextStyle(color: Colors.black),
-                              )
-                            : null,
+              children: [
+                ...List.generate(
+                  mockData.length,
+                  (index) {
+                    final isServisField = mockData[index]['title'] == 'Servis';
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: mockData[index]['title'] as String,
+                          labelStyle: const TextStyle(color: Colors.black),
+                          prefixIcon: mockData[index]['icon'] != null
+                              ? Icon(
+                                  mockData[index]['icon'] as IconData,
+                                  color: Colors.blue,
+                                )
+                              : null,
+                          suffixIcon: isServisField
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      serviceType,
+                                      style: const TextStyle(
+                                          color: Colors.black, fontSize: 16),
+                                    ),
+                                    const SizedBox(width: 8),
+                                  ],
+                                )
+                              : null,
+                        ),
+                        readOnly: isServisField,
                       ),
-                      readOnly: mockData[index]['title'] == 'Servis',
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              CreateProblem(serviceType: serviceType),
+                        ),
+                      );
+                      ;
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Problem anketi',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Icon(
+                            Icons.add,
+                            color: Colors.blue,
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                },
-              ).toList(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
             ),
           ),
         ),

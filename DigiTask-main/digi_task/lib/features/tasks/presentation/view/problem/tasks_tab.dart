@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../presentation/components/custom_progress_indicator.dart';
-import '../../../../presentation/components/service_type.dart';
+import '../../../../../presentation/components/custom_progress_indicator.dart';
+import '../../../../../presentation/components/service_type.dart';
 
 class TasksTab extends StatefulWidget {
   const TasksTab({super.key});

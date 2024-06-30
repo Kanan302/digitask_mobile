@@ -13,8 +13,8 @@ import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../core/constants/path/icon_path.dart';
-import '../../notifier/task_create_state.dart';
+import '../../../../core/constants/path/icon_path.dart';
+import '../notifier/task_create_state.dart';
 
 class CreateTaskView extends StatefulWidget {
   const CreateTaskView({super.key});
