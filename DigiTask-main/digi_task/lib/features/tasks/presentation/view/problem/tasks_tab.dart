@@ -226,223 +226,68 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
                         DateFormat('MMM d').format(nowDateTime);
 
                     return Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16, right: 16, bottom: 24),
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                insetPadding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Material(
-                                  borderRadius: BorderRadius.circular(24),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(24),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 26.0, horizontal: 16),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Center(
-                                            child: Text(
-                                              "Servis növü",
-                                              style: context
-                                                  .typography.subtitle1Medium,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Hansı anketi doldurursunuz?',
-                                            style: context
-                                                .typography.body2Regular
-                                                .copyWith(
-                                              color:
-                                                  context.colors.neutralColor50,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 24),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16),
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      side: const BorderSide(
-                                                          width: 4,
-                                                          color: Colors.yellow),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProblemTask(
-                                                                serviceType:
-                                                                    'Tv'),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Text(
-                                                    'Tv',
-                                                    style: context.typography
-                                                        .body2SemiBold
-                                                        .copyWith(
-                                                      color: context.colors
-                                                          .primaryColor50,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 16),
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16),
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      side: const BorderSide(
-                                                          width: 4,
-                                                          color: Colors.yellow),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProblemTask(
-                                                                serviceType:
-                                                                    'İnternet'),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Text(
-                                                    'İnternet',
-                                                    style: context.typography
-                                                        .body2SemiBold
-                                                        .copyWith(
-                                                      color: context.colors
-                                                          .primaryColor50,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 16),
-                                              Expanded(
-                                                child: ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16),
-                                                    backgroundColor:
-                                                        Colors.white,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      side: const BorderSide(
-                                                          width: 4,
-                                                          color: Colors.yellow),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProblemTask(
-                                                                serviceType:
-                                                                    'Voice'),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Text(
-                                                    'Voice',
-                                                    style: context.typography
-                                                        .body2SemiBold
-                                                        .copyWith(
-                                                      color: context.colors
-                                                          .primaryColor50,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 16, bottom: 24),
+                        child: GestureDetector(
+                          onTap: () {
+                            List<String> serviceTypes = [];
+                            if (taskNotifier.tasks?[index].isInternet == true) {
+                              serviceTypes.add('Internet');
+                            }
+                            if (taskNotifier.tasks?[index].isTv == true) {
+                              serviceTypes.add('Tv');
+                            }
+                            if (taskNotifier.tasks?[index].isVoice == true) {
+                              serviceTypes.add('Voice');
+                            }
+                            String serviceType = serviceTypes.join(', ');
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProblemTask(serviceType: serviceType),
+                              ),
+                            );
+                          },
+                          child: UserTaskCard(
+                            iconRow: Row(
+                              children: [
+                                if (taskNotifier.tasks?[index].isInternet ==
+                                    true)
+                                  ServiceType(
+                                    image: IconPath.internet.toPathSvg,
+                                    title: "Internet",
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child: UserTaskCard(
-                          iconRow: Row(
-                            children: [
-                              if (taskNotifier.tasks?[index].isInternet == true)
-                                ServiceType(
-                                  image: IconPath.internet.toPathSvg,
-                                  title: "Internet",
-                                ),
-                              if (taskNotifier.tasks?[index].isTv == true)
-                                ServiceType(
-                                  image: IconPath.tv.toPathSvg,
-                                  title: "Tv",
-                                ),
-                              if (taskNotifier.tasks?[index].isVoice == true)
-                                ServiceType(
-                                  image: IconPath.voice.toPathSvg,
-                                  title: "Voice",
-                                ),
-                            ],
+                                if (taskNotifier.tasks?[index].isTv == true)
+                                  ServiceType(
+                                    image: IconPath.tv.toPathSvg,
+                                    title: "Tv",
+                                  ),
+                                if (taskNotifier.tasks?[index].isVoice == true)
+                                  ServiceType(
+                                    image: IconPath.voice.toPathSvg,
+                                    title: "Voice",
+                                  ),
+                              ],
+                            ),
+                            name: taskNotifier.tasks?[index].firstName ??
+                                'Not found user',
+                            time: formattedDate == nowFormattedDate
+                                ? 'Bu gün, ${taskNotifier.tasks?[index].time}'
+                                : '$formattedDate, ${taskNotifier.tasks?[index].time}',
+                            location: taskNotifier.tasks?[index].location ?? '',
+                            number:
+                                taskNotifier.tasks?[index].contactNumber ?? '',
+                            status: taskNotifier.tasks?[index].status ?? '',
+                            notifier: notifier,
+                            group: (taskNotifier
+                                        .tasks?[index].group?.isNotEmpty ??
+                                    false)
+                                ? '${taskNotifier.tasks?[index].group?.first.group}'
+                                : "Empty group",
                           ),
-                          name: taskNotifier.tasks?[index].firstName ??
-                              'Not found user',
-                          time: formattedDate == nowFormattedDate
-                              ? 'Bu gün, ${taskNotifier.tasks?[index].time}'
-                              : '$formattedDate, ${taskNotifier.tasks?[index].time}',
-                          location: taskNotifier.tasks?[index].location ?? '',
-                          number:
-                              taskNotifier.tasks?[index].contactNumber ?? '',
-                          status: taskNotifier.tasks?[index].status ?? '',
-                          notifier: notifier,
-                          group: (taskNotifier
-                                      .tasks?[index].group?.isNotEmpty ??
-                                  false)
-                              ? '${taskNotifier.tasks?[index].group?.first.group}'
-                              : "Empty group",
-                        ),
-                      ),
-                    );
+                        ));
                   },
                 ),
               );

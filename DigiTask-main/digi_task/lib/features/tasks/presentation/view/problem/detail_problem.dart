@@ -7,6 +7,7 @@ class CreateProblem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Problem anketi'),
         backgroundColor: Colors.white,
@@ -80,10 +81,30 @@ class CreateProblem extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16.0),
-              _buildTextField('Modem S/N'),
-              _buildTextField('RG6 Kabel'),
-              _buildTextField('F-Connector'),
-              _buildTextField('Splitter'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildTextField('Modem S/N'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildTextField('RG6 Kabel'),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: _buildTextField('F-Connector'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
               _buildTextField('Qeyd', maxLines: 3),
               const SizedBox(height: 16.0),
               SizedBox(
