@@ -1,8 +1,49 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
-class CreateProblem extends StatelessWidget {
+class CreateProblem extends StatefulWidget {
   final String serviceType;
   const CreateProblem({super.key, required this.serviceType});
+
+  @override
+  State<CreateProblem> createState() => _CreateProblemState();
+}
+
+class _CreateProblemState extends State<CreateProblem> {
+  XFile? imageFile;
+  final TextEditingController modemSnController = TextEditingController();
+  final TextEditingController rg6KabelController = TextEditingController();
+  final TextEditingController fConnectorController = TextEditingController();
+  final TextEditingController noteController = TextEditingController();
+  Map<String, dynamic>? savedProblem;
+  
+  void getImage() async {
+    try {
+      final pickedImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        imageFile = pickedImage;
+        setState(() {});
+      }
+    } catch (e) {
+      imageFile = null;
+      setState(() {});
+      print(e);
+    }
+  }
+
+    void saveProblem() {
+    setState(() {
+      savedProblem = {
+        'image': imageFile,
+        'modemSn': modemSnController.text,
+        'rg6Kabel': rg6KabelController.text,
+        'fConnector': fConnectorController.text,
+        'note': noteController.text,
+      };
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +70,7 @@ class CreateProblem extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    serviceType,
+                    widget.serviceType,
                     style: const TextStyle(
                       color: Color(0xFF005ABF),
                       fontSize: 19,
@@ -44,42 +85,34 @@ class CreateProblem extends StatelessWidget {
                 style: TextStyle(fontSize: 16.0, color: Color(0xFF909094)),
               ),
               const SizedBox(height: 8.0),
-              GestureDetector(
-                onTap: () {
-                  // Add your file upload functionality here
-                  // Example: launch file picker or camera
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 100.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: const Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              imageFile == null
+                  ? _buildImagePickerContainer()
+                  : Stack(
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Yükləmək üçün klikləyin',
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            SizedBox(height: 4.0),
-                            Text(
-                              '(Maksimum fayl ölçüsü: 25 MB)',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.file(
+                            File(imageFile!.path),
+                            width: double.infinity,
+                            height: 100.0,
+                            fit: BoxFit.contain,
+                          ),
                         ),
-                        Icon(Icons.upload_file_outlined),
+                        Positioned(
+                          right: 0.0,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                imageFile = null;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ),
-              ),
               const SizedBox(height: 16.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,9 +142,21 @@ class CreateProblem extends StatelessWidget {
               const SizedBox(height: 16.0),
               SizedBox(
                 width: double.infinity,
+                height: 50,
                 child: ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Yadda saxla'),
+                  onPressed: saveProblem,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF005ABF),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Yadda saxla',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -144,6 +189,42 @@ class CreateProblem extends StatelessWidget {
         ),
         const SizedBox(height: 16.0),
       ],
+    );
+  }
+
+  Widget _buildImagePickerContainer() {
+    return GestureDetector(
+      onTap: () => getImage(),
+      child: Container(
+        width: double.infinity,
+        height: 100.0,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: const Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Yükləmək üçün klikləyin',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                  SizedBox(height: 4.0),
+                  Text(
+                    '(Maksimum fayl ölçüsü: 25 MB)',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ],
+              ),
+              Icon(Icons.upload_file_outlined),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
