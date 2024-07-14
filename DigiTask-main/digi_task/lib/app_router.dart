@@ -1,6 +1,7 @@
 import 'package:digi_task/core/constants/routes.dart';
 import 'package:digi_task/features/anbar/presentation/notifier/anbar_notifier.dart';
 import 'package:digi_task/features/anbar/presentation/view/anbar_view.dart';
+import 'package:digi_task/features/isciler/isciler_view.dart';
 import 'package:digi_task/features/performance/presentation/notifier/performance_notifier.dart';
 import 'package:digi_task/features/profile/presentation/notifier/profile_notifier.dart';
 import 'package:digi_task/features/profile/presentation/view/profile_edit_view.dart';
@@ -151,7 +152,11 @@ final class AppRouter {
                 child: const AnbarView(),
               ),
             ),
-            
+            GoRoute(
+                path: AppRoutes.isciler.path,
+                name: AppRoutes.isciler.name,
+                builder: (context, state) => const IscilerView(),
+              ),
           ],
         ),
        

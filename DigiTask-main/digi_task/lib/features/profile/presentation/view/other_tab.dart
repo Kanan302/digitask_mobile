@@ -23,7 +23,8 @@ class OtherTab extends StatelessWidget {
             title: "Profil",
             leadingIcon: IconPath.adminprofile.toPathSvg,
             trailingIcon: IconPath.arrowright.toPathSvg,
-            sytle: context.typography.subtitle2Medium.copyWith(color: context.colors.neutralColor20),
+            sytle: context.typography.subtitle2Medium
+                .copyWith(color: context.colors.neutralColor20),
           ),
           const SizedBox(
             height: 8,
@@ -35,17 +36,21 @@ class OtherTab extends StatelessWidget {
             title: "Anbar",
             leadingIcon: IconPath.anbar.toPathSvg,
             trailingIcon: IconPath.arrowright.toPathSvg,
-            sytle: context.typography.subtitle2Medium.copyWith(color: context.colors.neutralColor20),
+            sytle: context.typography.subtitle2Medium
+                .copyWith(color: context.colors.neutralColor20),
           ),
           const SizedBox(
             height: 8,
           ),
           ProfileCardItem(
-            onPressed: () {},
+            onPressed: () {
+              context.goNamed(AppRoutes.isciler.name);
+            },
             title: "İşçilər",
             leadingIcon: IconPath.employers.toPathSvg,
             trailingIcon: IconPath.arrowright.toPathSvg,
-            sytle: context.typography.subtitle2Medium.copyWith(color: context.colors.neutralColor20),
+            sytle: context.typography.subtitle2Medium
+                .copyWith(color: context.colors.neutralColor20),
           ),
         ],
       ),
