@@ -1,5 +1,5 @@
-import 'package:digi_task/core/constants/theme/theme_ext.dart';
-import 'package:digi_task/features/tasks/presentation/view/problem/detail_problem.dart';
+import 'package:digi_task/features/tasks/presentation/view/problem/widgets/service_detail.dart';
+import 'package:digi_task/features/tasks/presentation/view/problem/widgets/service_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_task/features/tasks/data/model/task_model.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/task_service.dart';
@@ -9,10 +9,10 @@ class ProblemTask extends StatefulWidget {
   final int taskId;
 
   const ProblemTask({
-    Key? key,
+    super.key,
     required this.serviceType,
     required this.taskId,
-  }) : super(key: key);
+  });
 
   @override
   _ProblemTaskState createState() => _ProblemTaskState();
@@ -103,6 +103,13 @@ class _ProblemTaskState extends State<ProblemTask> {
                         );
                       }),
                       const SizedBox(height: 16),
+                      if (widget.serviceType != null)
+                        ServiceDetailsWidget(
+                          serviceType: widget.serviceType,
+                          taskId: widget.taskId,
+                          taskData: taskData, 
+                        ),
+                      const SizedBox(height: 16),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: GestureDetector(
@@ -110,185 +117,9 @@ class _ProblemTaskState extends State<ProblemTask> {
                             showDialog(
                               context: context,
                               builder: (context) {
-                                return Dialog(
-                                  insetPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(24),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(24),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 26.0, horizontal: 16),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Center(
-                                              child: Text(
-                                                "Servis növü",
-                                                style: context
-                                                    .typography.subtitle1Medium,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              'Hansı anketi doldurursunuz?',
-                                              style: context
-                                                  .typography.body2Regular
-                                                  .copyWith(
-                                                color: context
-                                                    .colors.neutralColor50,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 24),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                if (widget.serviceType
-                                                    .contains('Internet'))
-                                                  ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              16),
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        side: const BorderSide(
-                                                            width: 4,
-                                                            color:
-                                                                Colors.yellow),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              CreateProblem(
-                                                            serviceType:
-                                                                'Internet',
-                                                            taskId:
-                                                                widget.taskId,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      'Internet',
-                                                      style: context.typography
-                                                          .body2SemiBold
-                                                          .copyWith(
-                                                        color: context.colors
-                                                            .primaryColor50,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                if (widget.serviceType
-                                                    .contains('Tv'))
-                                                  ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              16),
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        side: const BorderSide(
-                                                            width: 4,
-                                                            color:
-                                                                Colors.yellow),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              CreateProblem(
-                                                            serviceType: 'Tv',
-                                                            taskId:
-                                                                widget.taskId,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      'Tv',
-                                                      style: context.typography
-                                                          .body2SemiBold
-                                                          .copyWith(
-                                                        color: context.colors
-                                                            .primaryColor50,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                if (widget.serviceType
-                                                    .contains('Voice'))
-                                                  ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              16),
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        side: const BorderSide(
-                                                            width: 4,
-                                                            color:
-                                                                Colors.yellow),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              CreateProblem(
-                                                            serviceType:
-                                                                'Voice',
-                                                            taskId:
-                                                                widget.taskId,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      'Voice',
-                                                      style: context.typography
-                                                          .body2SemiBold
-                                                          .copyWith(
-                                                        color: context.colors
-                                                            .primaryColor50,
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                return ServiceDialog(
+                                  serviceType: widget.serviceType,
+                                  taskId: widget.taskId,
                                 );
                               },
                             );

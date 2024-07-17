@@ -76,7 +76,8 @@ class TaskModel {
     user = json['user'];
     tv = json['tv'] != null ? Tv.fromJson(json['tv']) : null;
     voice = json['voice'] != null ? Voice.fromJson(json['voice']) : null;
-    internet = json['internet'] != null ? Internet.fromJson(json['internet']) : null;
+    internet =
+        json['internet'] != null ? Internet.fromJson(json['internet']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -221,14 +222,27 @@ class Internet {
   String? photoModem;
   String? modemSN;
   int? task;
+  String? optical_cable;
+  String? fastconnector;
+  String? siqnal;
 
-  Internet({this.id, this.photoModem, this.modemSN, this.task});
+  Internet(
+      {this.id,
+      this.photoModem,
+      this.modemSN,
+      this.task,
+      this.optical_cable,
+      this.fastconnector,
+      this.siqnal});
 
   Internet.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     photoModem = json['photo_modem'];
     modemSN = json['modem_SN'];
     task = json['task'];
+    optical_cable = json['optical_cable'];
+    fastconnector = json['fastconnector'];
+    siqnal = json['siqnal'];
   }
 
   Map<String, dynamic> toJson() {
@@ -237,6 +251,9 @@ class Internet {
     data['photo_modem'] = photoModem;
     data['modem_SN'] = modemSN;
     data['task'] = task;
+    data['optical_cable'] = optical_cable;
+    data['fastconnector'] = fastconnector;
+    data['siqnal'] = siqnal;
     return data;
   }
 }
