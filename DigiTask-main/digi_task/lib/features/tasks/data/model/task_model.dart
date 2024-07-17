@@ -1,6 +1,7 @@
 class TaskModel {
   int? id;
   List<Group>? group;
+  String? fullName;
   String? firstName;
   String? lastName;
   String? createdAt;
@@ -18,10 +19,14 @@ class TaskModel {
   bool? isInternet;
   bool? isTv;
   int? user;
+  Tv? tv;
+  Voice? voice;
+  Internet? internet;
 
   TaskModel(
       {this.id,
       this.group,
+      this.fullName,
       this.firstName,
       this.lastName,
       this.createdAt,
@@ -38,7 +43,10 @@ class TaskModel {
       this.isVoice,
       this.isInternet,
       this.isTv,
-      this.user});
+      this.user,
+      this.tv,
+      this.voice,
+      this.internet});
 
   TaskModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -48,6 +56,7 @@ class TaskModel {
         group!.add(Group.fromJson(v));
       });
     }
+    fullName = json['full_name'];
     firstName = json['first_name'];
     lastName = json['last_name'];
     createdAt = json['created_at'];
@@ -65,6 +74,9 @@ class TaskModel {
     isInternet = json['is_internet'];
     isTv = json['is_tv'];
     user = json['user'];
+    tv = json['tv'] != null ? Tv.fromJson(json['tv']) : null;
+    voice = json['voice'] != null ? Voice.fromJson(json['voice']) : null;
+    internet = json['internet'] != null ? Internet.fromJson(json['internet']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -73,6 +85,7 @@ class TaskModel {
     if (group != null) {
       data['group'] = group!.map((v) => v.toJson()).toList();
     }
+    data['full_name'] = fullName;
     data['first_name'] = firstName;
     data['last_name'] = lastName;
     data['created_at'] = createdAt;
@@ -90,6 +103,15 @@ class TaskModel {
     data['is_internet'] = isInternet;
     data['is_tv'] = isTv;
     data['user'] = user;
+    if (tv != null) {
+      data['tv'] = tv!.toJson();
+    }
+    if (voice != null) {
+      data['voice'] = voice!.toJson();
+    }
+    if (internet != null) {
+      data['internet'] = internet!.toJson();
+    }
     return data;
   }
 }
@@ -112,6 +134,109 @@ class Group {
     data['id'] = id;
     data['group'] = group;
     data['region'] = region;
+    return data;
+  }
+}
+
+class Tv {
+  int? id;
+  String? photoModem;
+  String? modemSN;
+  String? rg6Cable;
+  String? fConnector;
+  String? splitter;
+  int? task;
+
+  Tv(
+      {this.id,
+      this.photoModem,
+      this.modemSN,
+      this.rg6Cable,
+      this.fConnector,
+      this.splitter,
+      this.task});
+
+  Tv.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    photoModem = json['photo_modem'];
+    modemSN = json['modem_SN'];
+    rg6Cable = json['rg6_cable'];
+    fConnector = json['f_connector'];
+    splitter = json['splitter'];
+    task = json['task'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['photo_modem'] = photoModem;
+    data['modem_SN'] = modemSN;
+    data['rg6_cable'] = rg6Cable;
+    data['f_connector'] = fConnector;
+    data['splitter'] = splitter;
+    data['task'] = task;
+    return data;
+  }
+}
+
+class Voice {
+  int? id;
+  String? photoModem;
+  String? modemSN;
+  String? homeNumber;
+  String? password;
+  int? task;
+
+  Voice(
+      {this.id,
+      this.photoModem,
+      this.modemSN,
+      this.homeNumber,
+      this.password,
+      this.task});
+
+  Voice.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    photoModem = json['photo_modem'];
+    modemSN = json['modem_SN'];
+    homeNumber = json['home_number'];
+    password = json['password'];
+    task = json['task'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['photo_modem'] = photoModem;
+    data['modem_SN'] = modemSN;
+    data['home_number'] = homeNumber;
+    data['password'] = password;
+    data['task'] = task;
+    return data;
+  }
+}
+
+class Internet {
+  int? id;
+  String? photoModem;
+  String? modemSN;
+  int? task;
+
+  Internet({this.id, this.photoModem, this.modemSN, this.task});
+
+  Internet.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    photoModem = json['photo_modem'];
+    modemSN = json['modem_SN'];
+    task = json['task'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['photo_modem'] = photoModem;
+    data['modem_SN'] = modemSN;
+    data['task'] = task;
     return data;
   }
 }

@@ -76,90 +76,94 @@ final class AppRouter {
           builder: (context, state) => const OnboardingPage(),
         ),
         GoRoute(
-            path: AppRoutes.login.path,
-            name: AppRoutes.login.name,
-            builder: (context, state) => ChangeNotifierProvider(
-                  create: (context) => GetIt.instance<LoginNotifier>(),
-                  child: const LoginPage(),
+          path: AppRoutes.login.path,
+          name: AppRoutes.login.name,
+          builder: (context, state) => ChangeNotifierProvider(
+            create: (context) => GetIt.instance<LoginNotifier>(),
+            child: const LoginPage(),
           ),
         ),
-     
         GoRoute(
-            path: AppRoutes.home.path,
-            name: AppRoutes.home.name,
-            builder: (context, state) => MultiProvider(
-                  providers: [
-                    ChangeNotifierProvider(
-                      create: (context) => GetIt.instance<MainNotifier>()
-                        ..fetchUserTask()
-                        ..checkAdmin(),
-                    ),
-                    ChangeNotifierProvider(
-                create: (context) => GetIt.instance<PerformanceNotifier>()..fetchPerfomance(),
-                    ),
-                    ChangeNotifierProvider(
-                      create: (context) => GetIt.instance<TaskNotifier>()..fetchTasks(queryType: 'connection'),
-                    ),
-                    ChangeNotifierProvider(
-                      create: (context) => GetIt.instance<ProfileNotifier>()..getUserInformation(),
-                    ),
+          path: AppRoutes.home.path,
+          name: AppRoutes.home.name,
+          builder: (context, state) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                create: (context) => GetIt.instance<MainNotifier>()
+                  ..fetchUserTask()
+                  ..checkAdmin(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) =>
+                    GetIt.instance<PerformanceNotifier>()..fetchPerfomance(),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => GetIt.instance<TaskNotifier>()
+                  ..fetchTasks(queryType: 'connection'),
+              ),
+              ChangeNotifierProvider(
+                create: (context) =>
+                    GetIt.instance<ProfileNotifier>()..getUserInformation(),
+              ),
               // ChangeNotifierProvider(
               //   create: (context) => GetIt.instance<AnbarNotifier>()..getAnbarItemList(),
               // ),
-                  ],
-                  child: const HomePage(),
-                ),
-            routes: [
-              GoRoute(
-                path: AppRoutes.notification.path,
-                name: AppRoutes.notification.name,
-                builder: (context, state) => const NotificationPage(),
+            ],
+            child: const HomePage(),
+          ),
+          routes: [
+            GoRoute(
+              path: AppRoutes.notification.path,
+              name: AppRoutes.notification.name,
+              builder: (context, state) => const NotificationPage(),
+            ),
+            GoRoute(
+              path: AppRoutes.chat.path,
+              name: AppRoutes.chat.name,
+              builder: (context, state) => const ChatPage(),
+            ),
+            GoRoute(
+              path: AppRoutes.createTask.path,
+              name: AppRoutes.createTask.name,
+              builder: (context, state) => MultiProvider(providers: [
+                ChangeNotifierProvider(
+                    create: (context) => GetIt.instance<TaskNotifier>()),
+                ChangeNotifierProvider(
+                    create: (context) => GetIt.instance<MainNotifier>()),
+              ], child: const CreateTaskView()),
+            ),
+            GoRoute(
+              path: AppRoutes.profileEdit.path,
+              name: AppRoutes.profileEdit.name,
+              builder: (context, state) => ChangeNotifierProvider(
+                create: (context) => GetIt.instance<ProfileNotifier>(),
+                child: const ProfileEditView(),
               ),
-              GoRoute(
-                path: AppRoutes.chat.path,
-                name: AppRoutes.chat.name,
-                builder: (context, state) => const ChatPage(),
-              ),
-              GoRoute(
-                path: AppRoutes.createTask.path,
-                name: AppRoutes.createTask.name,
-                builder: (context, state) => MultiProvider(providers: [
-                  ChangeNotifierProvider(create: (context) => GetIt.instance<TaskNotifier>()),
-                  ChangeNotifierProvider(create: (context) => GetIt.instance<MainNotifier>()),
-                ], child: const CreateTaskView()),
-              ),
-              GoRoute(
-                path: AppRoutes.profileEdit.path,
-                name: AppRoutes.profileEdit.name,
-                builder: (context, state) => ChangeNotifierProvider(
-                  create: (context) => GetIt.instance<ProfileNotifier>(),
-                  child: const ProfileEditView(),
-                ),
-              ),
-              GoRoute(
-                path: AppRoutes.profile.path,
-                name: AppRoutes.profile.name,
-                builder: (context, state) => ChangeNotifierProvider(
-                  create: (context) => GetIt.instance<ProfileNotifier>()..getUserInformation(),
-                  child: const ProfileTab()
-                ), 
-              ),
+            ),
+            GoRoute(
+              path: AppRoutes.profile.path,
+              name: AppRoutes.profile.name,
+              builder: (context, state) => ChangeNotifierProvider(
+                  create: (context) =>
+                      GetIt.instance<ProfileNotifier>()..getUserInformation(),
+                  child: const ProfileTab()),
+            ),
             GoRoute(
               path: AppRoutes.anbar.path,
               name: AppRoutes.anbar.name,
               builder: (context, state) => ChangeNotifierProvider(
-                create: (context) => GetIt.instance<AnbarNotifier>()..getAnbarItemList(),
+                create: (context) =>
+                    GetIt.instance<AnbarNotifier>()..getAnbarItemList(),
                 child: const AnbarView(),
               ),
             ),
             GoRoute(
-                path: AppRoutes.isciler.path,
-                name: AppRoutes.isciler.name,
-                builder: (context, state) => const IscilerView(),
-              ),
+              path: AppRoutes.isciler.path,
+              name: AppRoutes.isciler.name,
+              builder: (context, state) => const IscilerView(),
+            ),
           ],
         ),
-       
       ],
     );
   }

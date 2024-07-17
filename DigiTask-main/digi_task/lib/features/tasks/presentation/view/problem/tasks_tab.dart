@@ -12,9 +12,6 @@ import 'package:provider/provider.dart';
 import '../../../../../presentation/components/custom_progress_indicator.dart';
 import '../../../../../presentation/components/service_type.dart';
 
-
-
-
 class TasksTab extends StatefulWidget {
   const TasksTab({super.key});
 
@@ -248,8 +245,10 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    ProblemTask(serviceType: serviceType),
+                                builder: (context) => ProblemTask(
+                                  serviceType: serviceType,
+                                  taskId: taskNotifier.tasks![index].id ?? 0,
+                                ),
                               ),
                             );
                           },

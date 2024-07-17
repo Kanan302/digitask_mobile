@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               BorderSide(color: context.colors.primaryColor50),
                                             ),
                                           ),
-                                          onPressed: () {
+                                          onPressed: () { 
                                             context.goNamed(AppRoutes.createTask.name, extra: 'connection');
                                           },
                                           child: Text(
