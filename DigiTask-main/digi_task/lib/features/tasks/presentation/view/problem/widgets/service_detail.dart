@@ -7,11 +7,11 @@ class ServiceDetailsWidget extends StatelessWidget {
   final TaskModel taskData;
 
   const ServiceDetailsWidget({
-    Key? key,
+    super.key,
     required this.serviceType,
     required this.taskId,
     required this.taskData,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +23,19 @@ class ServiceDetailsWidget extends StatelessWidget {
       );
     }
 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (task.internet != null) _buildInternetContainer(task.internet!),
+        const SizedBox(height: 16),
+        if (task.tv != null) _buildTvContainer(task.tv!),
+        const SizedBox(height: 16),
+        if (task.voice != null) _buildVoiceContainer(task.voice!),
+      ],
+    );
+  }
+
+  Widget _buildInternetContainer(Internet internetData) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(16),
@@ -43,10 +56,10 @@ class ServiceDetailsWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(
+              const Expanded(
                 child: Text(
-                  '$serviceType anketi',
-                  style: const TextStyle(
+                  'Internet anketi',
+                  style: TextStyle(
                     fontSize: 20,
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -63,39 +76,106 @@ class ServiceDetailsWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          _buildServiceDetails(task),
+          _buildInternetDetails(internetData),
         ],
       ),
     );
   }
 
-  Widget _buildServiceDetails(TaskModel task) {
-    List<Widget> widgets = [];
-
-    // Check for Internet service
-    if (task.internet != null) {
-      widgets.add(_buildInternetDetails(task.internet!));
-      widgets.add(const SizedBox(height: 16));
-    }
-
-    // Check for TV service
-    if (task.tv != null && !widgets.contains(_buildTvDetails(task.tv!))) {
-      widgets.add(_buildTvDetails(task.tv!));
-      widgets.add(const SizedBox(height: 16));
-    }
-
-    // Check for Voice service
-    if (task.voice != null &&
-        !widgets.contains(_buildVoiceDetails(task.voice!))) {
-      widgets.add(_buildVoiceDetails(task.voice!));
-      widgets.add(const SizedBox(height: 16));
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgets,
+  Widget _buildTvContainer(Tv tvData) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'TV anketi',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.edit_outlined,
+                  color: Colors.blue,
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildTvDetails(tvData),
+        ],
+      ),
     );
   }
+
+  Widget _buildVoiceContainer(Voice voiceData) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  'Voice anketi',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.edit_outlined,
+                  color: Colors.blue,
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildVoiceDetails(voiceData),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTvDetails(Tv tvData) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +268,7 @@ class ServiceDetailsWidget extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            flex: 3,
+            flex: 5,
             child: TextFormField(
               initialValue: title,
               readOnly: true,
@@ -220,8 +300,6 @@ class ServiceDetailsWidget extends StatelessWidget {
   }
 
   TaskModel? _findTaskById(int taskId) {
-    // Example logic to find a task in taskData based on taskId
-    // Replace this with your actual implementation based on your data structure
     return taskData;
   }
 }

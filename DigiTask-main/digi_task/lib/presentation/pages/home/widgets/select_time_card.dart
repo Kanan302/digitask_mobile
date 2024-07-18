@@ -6,8 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/constants/path/icon_path.dart';
 
 class SelectTimeCard extends StatefulWidget {
-  const SelectTimeCard({super.key});
-
+  const SelectTimeCard({super.key, required this.text});
+  final String text;
   @override
   State<SelectTimeCard> createState() => _SelectTimeCardState();
 }
@@ -27,7 +27,7 @@ class _SelectTimeCardState extends State<SelectTimeCard> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                '01/06/2023',
+                widget.text,
                 style: context.typography.body1SemiBold.copyWith(color: context.colors.neutralColor50),
               ),
               const SizedBox(

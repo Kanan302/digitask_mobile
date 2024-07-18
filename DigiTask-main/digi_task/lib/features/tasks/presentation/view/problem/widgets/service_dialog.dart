@@ -1,15 +1,18 @@
 import 'package:digi_task/core/constants/theme/theme_ext.dart';
+import 'package:digi_task/features/tasks/data/model/task_model.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/detail_problem.dart';
 import 'package:flutter/material.dart';
 
 class ServiceDialog extends StatelessWidget {
   final String serviceType;
   final int taskId;
+  final TaskModel taskData;
 
   const ServiceDialog({
     super.key,
     required this.serviceType,
     required this.taskId,
+    required this.taskData,
   });
 
   @override
@@ -45,7 +48,7 @@ class ServiceDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    if (serviceType.contains('Internet'))
+                    if (taskData.isInternet == true)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(16),
@@ -76,7 +79,7 @@ class ServiceDialog extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (serviceType.contains('Tv'))
+                    if (taskData.isTv == true)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(16),
@@ -107,7 +110,7 @@ class ServiceDialog extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (serviceType.contains('Voice'))
+                    if (taskData.isVoice == true)
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(16),

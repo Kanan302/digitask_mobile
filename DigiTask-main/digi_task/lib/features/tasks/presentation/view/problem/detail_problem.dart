@@ -244,29 +244,6 @@ class _CreateProblemState extends State<CreateProblem> {
                   ),
                   _buildTextFormField('Splitter', splitterController),
                 ],
-                Row(
-                  children: [
-                    const Text(
-                      'Task:',
-                      style: TextStyle(fontSize: 16, color: Color(0xFF909094)),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextFormField(
-                        controller: noteController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: const Color.fromARGB(174, 247, 245, 255),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 8.0),
                 SizedBox(
                   width: double.infinity,

@@ -18,7 +18,7 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(
+        ChangeNotifierProvider( 
           create: (context) => GetIt.instance<AuthNotifier>(),
         ),
         

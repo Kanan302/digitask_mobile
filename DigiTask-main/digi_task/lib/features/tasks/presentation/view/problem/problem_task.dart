@@ -7,11 +7,13 @@ import 'package:digi_task/features/tasks/presentation/view/problem/task_service.
 class ProblemTask extends StatefulWidget {
   final String serviceType;
   final int taskId;
+  final TaskModel taskData;
 
   const ProblemTask({
     super.key,
     required this.serviceType,
     required this.taskId,
+    required this.taskData,
   });
 
   @override
@@ -107,7 +109,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                         ServiceDetailsWidget(
                           serviceType: widget.serviceType,
                           taskId: widget.taskId,
-                          taskData: taskData, 
+                          taskData: taskData,
                         ),
                       const SizedBox(height: 16),
                       Padding(
@@ -120,6 +122,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                                 return ServiceDialog(
                                   serviceType: widget.serviceType,
                                   taskId: widget.taskId,
+                                  taskData: widget.taskData,
                                 );
                               },
                             );

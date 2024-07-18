@@ -248,6 +248,7 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
                                 builder: (context) => ProblemTask(
                                   serviceType: serviceType,
                                   taskId: taskNotifier.tasks![index].id ?? 0,
+                                  taskData: taskNotifier.tasks![index],
                                 ),
                               ),
                             );

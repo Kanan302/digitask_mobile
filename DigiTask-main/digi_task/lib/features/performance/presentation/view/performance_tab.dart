@@ -21,16 +21,12 @@ class _PerformanceTabState extends State<PerformanceTab> {
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Column(
         children: [
-          const SizedBox(
-            height: 12,
-          ),
+          const SizedBox(height: 12),
           const Row(
             children: [
-              SelectTimeCard(),
-              SizedBox(
-                width: 16,
-              ),
-              SelectTimeCard(),
+              SelectTimeCard(text: '2024-03-13'),
+              SizedBox(width: 16),
+              SelectTimeCard(text: '2024-05-27'),
             ],
           ),
           const SizedBox(
@@ -41,7 +37,8 @@ class _PerformanceTabState extends State<PerformanceTab> {
               if (notifier.state is PerformanceLoading) {
                 return const Center(child: CustomProgressIndicator());
               } else if (notifier.state is PerformanceSuccess) {
-                final performance = (notifier.state as PerformanceSuccess).performanceList;
+                final performance =
+                    (notifier.state as PerformanceSuccess).performanceList;
                 return PerformanceTable(performance: performance);
               }
               return const SizedBox.shrink();
