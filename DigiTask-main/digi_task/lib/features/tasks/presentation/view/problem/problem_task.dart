@@ -76,7 +76,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                             textAlign: TextAlign.right,
                             decoration: InputDecoration(
                               labelText: data['title'] as String,
-                              labelStyle: const TextStyle(color: Colors.black),
+                              labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
                               prefixIcon: data['icon'] != null
                                   ? Icon(
                                       data['icon'] as IconData,

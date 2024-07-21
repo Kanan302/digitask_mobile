@@ -5,16 +5,28 @@ class PerformanceModel {
   String? lastName;
   Group? group;
   TaskCount? taskCount;
+  List<String>? dates;
 
-  PerformanceModel({this.id, this.userType, this.firstName, this.lastName, this.group, this.taskCount});
+  PerformanceModel({
+    this.id,
+    this.userType,
+    this.firstName,
+    this.lastName,
+    this.group,
+    this.taskCount,
+    this.dates,
+  });
 
   PerformanceModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'] != null ? int.tryParse(json['id']) : null;
     userType = json['user_type'];
     firstName = json['first_name'];
     lastName = json['last_name'];
     group = json['group'] != null ? Group.fromJson(json['group']) : null;
-    taskCount = json['task_count'] != null ? TaskCount.fromJson(json['task_count']) : null;
+    taskCount = json['task_count'] != null
+        ? TaskCount.fromJson(json['task_count'])
+        : null;
+    dates = json['dates'] != null ? List<String>.from(json['dates']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -29,6 +41,9 @@ class PerformanceModel {
     if (taskCount != null) {
       data['task_count'] = taskCount!.toJson();
     }
+    if (dates != null) {
+      data['dates'] = dates;
+    }
     return data;
   }
 }
@@ -41,7 +56,7 @@ class Group {
   Group({this.id, this.group, this.region});
 
   Group.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id'] is String ? int.tryParse(json['id']) : json['id'];
     group = json['group'];
     region = json['region'];
   }

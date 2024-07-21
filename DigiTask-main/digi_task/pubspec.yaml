@@ -31,6 +31,7 @@ dependencies:
   multi_dropdown: ^2.1.4
   google_ml_kit: ^0.18.0
   image_picker: ^1.1.2
+  flutter_cache_manager: ^3.3.2
 
 dev_dependencies:
   flutter_test:

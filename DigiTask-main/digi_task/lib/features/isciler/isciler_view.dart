@@ -43,7 +43,7 @@ class _IscilerViewState extends State<IscilerView> {
       }
 
       final response = await Dio().get(
-        'http://135.181.42.192/accounts/users/',
+        'http://135.181.42.192/accounts/users',
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
         ),
@@ -62,11 +62,11 @@ class _IscilerViewState extends State<IscilerView> {
   }
 
   Future<List<String>> _fetchUserTypes() async {
-    return ['Bütün işçilər', 'Texnik', 'Texnik menecer'];
+    return ['Bütün işçilər', 'Texnik', 'Texnik menecer', 'Plumber'];
   }
 
   Future<List<String>> _fetchGroups() async {
-    return ['Bütün qruplar', 'Qrup 1'];
+    return ['Bütün qruplar', 'Qrup 1', 'Qrup 2'];
   }
 
   List<User> _filterUsers(List<User> users) {
@@ -117,13 +117,11 @@ class _IscilerViewState extends State<IscilerView> {
                       FutureBuilder<List<String>>(
                         future: _userTypesFuture,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
+                          if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
+                          } else if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.data!.isEmpty) {
                             return const Text('No user types found');
                           } else {
                             return DropdownButtonFormField<String>(
@@ -179,13 +177,11 @@ class _IscilerViewState extends State<IscilerView> {
                       FutureBuilder<List<String>>(
                         future: _groupsFuture,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
+                          if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
+                          } else if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.data!.isEmpty) {
                             return const Text('No groups found');
                           } else {
                             return DropdownButtonFormField<String>(
@@ -252,11 +248,11 @@ class _IscilerViewState extends State<IscilerView> {
             child: FutureBuilder<List<User>>(
               future: _usersFuture,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
+                if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                } else if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.data!.isEmpty) {
                   return const Center(child: Text('No users found'));
                 } else {
                   List<User> filteredUsers = _filterUsers(snapshot.data!);

@@ -6,5 +6,7 @@ final baseDio = Dio()
   ..options = BaseOptions(
     baseUrl: AppKeys.baseUrl,
     contentType: 'application/json',
+    connectTimeout: const Duration(seconds: 5),
+    receiveTimeout: const Duration(seconds: 3),
   )
   ..interceptors.add(JwtInterceptor());

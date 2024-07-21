@@ -7,6 +7,8 @@ abstract class PerformanceState extends Equatable {
   List<Object?> get props => [];
 }
 
+
+
 class PerformanceInitial extends PerformanceState {}
 
 class PerformanceLoading extends PerformanceState {}
