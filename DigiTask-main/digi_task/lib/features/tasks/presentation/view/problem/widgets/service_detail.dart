@@ -351,7 +351,6 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
       _updateTaskData('Internet', task.internet!);
     } else if (widget.serviceType == 'Tv' && task.tv != null) {
       _updateTaskData('Tv', task.tv!);
-      
     } else if (widget.serviceType == 'Voice' && task.voice != null) {
       _updateTaskData('Voice', task.voice!);
     }

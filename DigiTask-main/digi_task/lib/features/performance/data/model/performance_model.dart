@@ -18,12 +18,18 @@ class PerformanceModel {
   });
 
   PerformanceModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'] != null ? int.tryParse(json['id']) : null;
+    id = json['id'] is String ? int.tryParse(json['id']) : json['id'];
     userType = json['user_type'];
     firstName = json['first_name'];
     lastName = json['last_name'];
-    group = json['group'] != null ? Group.fromJson(json['group']) : null;
-    taskCount = json['task_count'] != null
+    group = json['group'] != null &&
+            json['group'] is Map<String, dynamic> &&
+            json['group'].isNotEmpty
+        ? Group.fromJson(json['group'])
+        : null;
+    taskCount = json['task_count'] != null &&
+            json['task_count'] is Map<String, dynamic> &&
+            json['task_count'].isNotEmpty
         ? TaskCount.fromJson(json['task_count'])
         : null;
     dates = json['dates'] != null ? List<String>.from(json['dates']) : null;

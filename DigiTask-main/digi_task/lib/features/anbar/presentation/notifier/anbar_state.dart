@@ -2,16 +2,16 @@ import 'package:equatable/equatable.dart';
 
 import '../../data/model/anbar_item_model.dart';
 
-abstract class AnabarState extends Equatable {
+abstract class AnbarState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class AnbarInitial extends AnabarState {}
+class AnbarInitial extends AnbarState {}
 
-class AnbarLoading extends AnabarState {}
+class AnbarLoading extends AnbarState {}
 
-class AnbarSuccess extends AnabarState {
+class AnbarSuccess extends AnbarState {
   final List<AnbarItemModel> anbarList;
   AnbarSuccess({required this.anbarList});
 
@@ -19,7 +19,7 @@ class AnbarSuccess extends AnabarState {
   List<Object?> get props => [anbarList];
 }
 
-class AnbarFailure extends AnabarState {
+class AnbarFailure extends AnbarState {
   final String message;
   AnbarFailure({required this.message});
 

@@ -5,6 +5,7 @@ enum AppRoutes {
   home(path: '/home', name: 'home'),
   notification(path: 'notification', name: 'notification'),
   anbar(path: 'anbar', name: 'anbar'),
+  anbarMain(path: 'anbarMain', name: 'anbarMain'),
   isciler(path: 'isciler', name: 'isciler'),
   chat(path: 'chat', name: 'chat'),
   createTask(path: 'createTask', name: 'createTask'),

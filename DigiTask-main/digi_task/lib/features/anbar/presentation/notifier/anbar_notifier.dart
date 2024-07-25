@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class AnbarNotifier extends ChangeNotifier {
   AnbarNotifier(this.anbarRepository);
   final AnbarItemRepository anbarRepository;
-  AnabarState state = AnbarInitial();
+  AnbarState state = AnbarInitial();
 
   Future<void> getAnbarItemList() async {
     state = AnbarLoading();

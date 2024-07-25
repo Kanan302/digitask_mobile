@@ -1,4 +1,5 @@
 import 'package:digi_task/core/constants/routes.dart';
+import 'package:digi_task/features/anbar/anbar_mainview.dart';
 import 'package:digi_task/features/anbar/presentation/notifier/anbar_notifier.dart';
 import 'package:digi_task/features/anbar/presentation/view/anbar_view.dart';
 import 'package:digi_task/features/isciler/isciler_view.dart';
@@ -158,6 +159,11 @@ final class AppRouter {
               ),
             ),
             GoRoute(
+              path: AppRoutes.anbarMain.path,
+              name: AppRoutes.anbarMain.name,
+              builder: (context, state) => const AnbarMainView(),
+            ),
+            GoRoute(
               path: AppRoutes.isciler.path,
               name: AppRoutes.isciler.name,
               builder: (context, state) => const IscilerView(),
@@ -168,3 +174,5 @@ final class AppRouter {
     );
   }
 }
+
+

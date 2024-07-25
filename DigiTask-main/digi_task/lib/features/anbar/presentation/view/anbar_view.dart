@@ -1,5 +1,6 @@
 import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
+import 'package:digi_task/features/anbar/data/model/anbar_item_model.dart';
 import 'package:digi_task/features/anbar/presentation/notifier/anbar_notifier.dart';
 import 'package:digi_task/shared/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,24 @@ import '../../../../presentation/components/custom_progress_indicator.dart';
 import '../notifier/anbar_state.dart';
 import 'widgets/select_dropdown_field.dart';
 
-class AnbarView extends StatelessWidget {
+class AnbarView extends StatefulWidget {
   const AnbarView({super.key});
+
+  @override
+  State<AnbarView> createState() => _AnbarViewState();
+}
+
+class _AnbarViewState extends State<AnbarView> {
+  int? selectedWarehouseId = 0;
+
+  List<AnbarItemModel> filterAnbarItems(List<AnbarItemModel> items) {
+    if (selectedWarehouseId == 0) {
+      return items;
+    }
+    return items
+        .where((item) => item.warehouse?.id == selectedWarehouseId)
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +47,14 @@ class AnbarView extends StatelessWidget {
         title: Text('Anbar', style: context.typography.subtitle2Medium),
         actions: [
           SvgPicture.asset(IconPath.import.toPathSvg),
-          const SizedBox(
-            width: 8,
-          ),
+          const SizedBox(width: 8),
           SvgPicture.asset(IconPath.export.toPathSvg),
-          const SizedBox(
-            width: 16,
-          ),
+          const SizedBox(width: 16),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 16, top: 24, bottom: 24),
+        padding:
+            const EdgeInsets.only(left: 16.0, right: 16, top: 24, bottom: 24),
         child: Column(
           children: [
             CustomSearchBar(
@@ -49,22 +63,21 @@ class AnbarView extends StatelessWidget {
               isAnbar: true,
             ),
             const SizedBox(height: 8),
-            const Row(
+            Row(
               children: [
-                SelectDropdownField(
-                  title: "Anbar:",
+                Expanded(
+                  child: SelectDropdownField(
+                    title: "Anbar:",
+                    onChanged: (value) {
+                      setState(() {
+                        selectedWarehouseId = value;
+                      });
+                    },
+                  ),
                 ),
-                SizedBox(
-                  width: 24,
-                ),
-                SelectDropdownField(
-                  title: "Region:",
-                )
               ],
             ),
-            const SizedBox(
-              height: 16,
-            ),
+            const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
                 color: context.colors.primaryColor95,
@@ -74,7 +87,8 @@ class AnbarView extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -83,54 +97,58 @@ class AnbarView extends StatelessWidget {
                       child: Text(
                         'Avadanlıq',
                         maxLines: 1,
-                        style: context.typography.body1SemiBold.copyWith(color: context.colors.neutralColor20),
+                        style: context.typography.body1SemiBold
+                            .copyWith(color: context.colors.neutralColor20),
                       ),
                     ),
                     Expanded(
                       flex: 2,
                       child: Text(
                         'Marka',
-                        style: context.typography.body1SemiBold.copyWith(color: context.colors.neutralColor20),
+                        style: context.typography.body1SemiBold
+                            .copyWith(color: context.colors.neutralColor20),
                       ),
                     ),
                     Expanded(
                       flex: 2,
-
                       child: Center(
                           child: Text(
                         'Model',
-                        style: context.typography.body1SemiBold.copyWith(color: context.colors.neutralColor20),
+                        style: context.typography.body1SemiBold
+                            .copyWith(color: context.colors.neutralColor20),
                       )),
                     ),
                     Expanded(
                       flex: 2,
-
                       child: Center(
                           child: Text(
                         'Sayı',
-                        style: context.typography.body1SemiBold.copyWith(color: context.colors.neutralColor20),
+                        style: context.typography.body1SemiBold
+                            .copyWith(color: context.colors.neutralColor20),
                       )),
                     ),
                   ],
                 ),
               ),
             ),
-            Consumer<AnbarNotifier>(
-              builder: (context, notifier, child) {
-                if (notifier.state is AnbarLoading) {
-                  return const Center(
-                    child: CustomProgressIndicator(),
-                  );
-                } else if (notifier.state is AnbarSuccess) {
-                  final state = notifier.state as AnbarSuccess;
-                  return Expanded(
-                    child: Container(
+            Expanded(
+              child: Consumer<AnbarNotifier>(
+                builder: (context, notifier, child) {
+                  if (notifier.state is AnbarLoading) {
+                    return const Center(
+                      child: CustomProgressIndicator(),
+                    );
+                  } else if (notifier.state is AnbarSuccess) {
+                    final state = notifier.state as AnbarSuccess;
+                    final filteredItems = filterAnbarItems(state.anbarList);
+                    return Container(
                       decoration: BoxDecoration(
                           color: context.colors.neutralColor100,
                           borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(12), bottomRight: Radius.circular(12))),
+                              bottomLeft: Radius.circular(12),
+                              bottomRight: Radius.circular(12))),
                       child: ListView.builder(
-                        itemCount: state.anbarList.length,
+                        itemCount: filteredItems.length,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
@@ -142,33 +160,40 @@ class AnbarView extends StatelessWidget {
                                 height: 7,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 16.0, right: 16, top: 10),
+                                padding: const EdgeInsets.only(
+                                    left: 16.0, right: 16, top: 10),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
                                       flex: 3,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
+                                        padding:
+                                            const EdgeInsets.only(right: 12.0),
                                         child: Text(
-                                          "${state.anbarList[index].warehouse?.name}",
+                                          "${filteredItems[index].warehouse?.name}",
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: context.typography.body2SemiBold
-                                              .copyWith(color: context.colors.primaryColor50),
+                                          style: context
+                                              .typography.body2SemiBold
+                                              .copyWith(
+                                                  color: context
+                                                      .colors.primaryColor50),
                                         ),
                                       ),
                                     ),
                                     Expanded(
                                       flex: 2,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(right: 12.0),
+                                        padding:
+                                            const EdgeInsets.only(right: 12.0),
                                         child: Text(
-                                          "${state.anbarList[index].brand}",
-                                          style: context.typography.body2SemiBold,
+                                          "${filteredItems[index].brand}",
+                                          style:
+                                              context.typography.body2SemiBold,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
-                                        
                                         ),
                                       ),
                                     ),
@@ -176,11 +201,13 @@ class AnbarView extends StatelessWidget {
                                       flex: 2,
                                       child: Center(
                                         child: Text(
-                                          "${state.anbarList[index].model}",
+                                          "${filteredItems[index].model}",
                                           maxLines: 1,
-                      
-                                          style: context.typography.body2SemiBold
-                                              .copyWith(color: context.colors.primaryColor50),
+                                          style: context
+                                              .typography.body2SemiBold
+                                              .copyWith(
+                                                  color: context
+                                                      .colors.primaryColor50),
                                         ),
                                       ),
                                     ),
@@ -188,9 +215,12 @@ class AnbarView extends StatelessWidget {
                                       flex: 2,
                                       child: Center(
                                         child: Text(
-                                          "${state.anbarList[index].number}",
-                                          style: context.typography.body2SemiBold
-                                              .copyWith(color: context.colors.primaryColor50),
+                                          "${filteredItems[index].number}",
+                                          style: context
+                                              .typography.body2SemiBold
+                                              .copyWith(
+                                                  color: context
+                                                      .colors.primaryColor50),
                                         ),
                                       ),
                                     ),
@@ -204,71 +234,11 @@ class AnbarView extends StatelessWidget {
                           );
                         },
                       ),
-                    ),
-                  );
-
-                  // Column(
-                  //     children: anbarList.anbarList
-                  //         .map(
-                  //           (e) => Column(
-                  //             children: [
-                  //               Divider(
-                  //                 color: context.colors.neutralColor90,
-                  //                 height: 0,
-                  //               ),
-                  //               const SizedBox(
-                  //                 height: 7,
-                  //               ),
-                  //               Padding(
-                  //                 padding: const EdgeInsets.only(left: 16.0, right: 16, top: 10),
-                  //                 child: Row(
-                  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //                   children: [
-                  //                     Flexible(
-                  //                       child: Text(
-                  //                         "${e.warehouse?.name}",
-                  //                         maxLines: 1,
-                  //                         style: context.typography.body2SemiBold
-                  //                             .copyWith(color: context.colors.primaryColor50),
-                  //                       ),
-                  //                     ),
-                  //                     Flexible(
-                  //                       child: Text(
-                  //                         "${e.brand}",
-                  //                         style: context.typography.body2SemiBold,
-                  //                       ),
-                  //                     ),
-                  //                     Flexible(
-                  //                       child: Center(
-                  //                         child: Text(
-                  //                           "${e.model}",
-                  //                           style: context.typography.body2SemiBold
-                  //                               .copyWith(color: context.colors.primaryColor50),
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                     Flexible(
-                  //                       child: Center(
-                  //                         child: Text(
-                  //                           "${e.number}",
-                  //                           style: context.typography.body2SemiBold
-                  //                               .copyWith(color: context.colors.primaryColor50),
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //               const SizedBox(
-                  //                 height: 10,
-                  //               )
-                  //             ],
-                  //           ),
-                  //         )
-                  //         .toList());
-                }
-                return const SizedBox.shrink();
-              },
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
             )
           ],
         ),

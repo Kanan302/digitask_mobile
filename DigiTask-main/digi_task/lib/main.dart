@@ -12,11 +12,12 @@ import 'injection.dart';
 
 
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
   runApp(
-    MultiProvider(
+    MultiProvider( 
       providers: [
         ChangeNotifierProvider( 
           create: (context) => GetIt.instance<AuthNotifier>(),

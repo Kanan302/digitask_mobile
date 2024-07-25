@@ -62,7 +62,13 @@ class _IscilerViewState extends State<IscilerView> {
   }
 
   Future<List<String>> _fetchUserTypes() async {
-    return ['Bütün işçilər', 'Texnik', 'Texnik menecer', 'Plumber'];
+    return [
+      'Bütün işçilər',
+      'Texnik',
+      'Texnik menecer',
+      'Plumber',
+      'Ofis menecer'
+    ];
   }
 
   Future<List<String>> _fetchGroups() async {
