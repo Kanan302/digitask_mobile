@@ -10,10 +10,8 @@ enum AppRoutes {
   chat(path: 'chat', name: 'chat'),
   createTask(path: 'createTask', name: 'createTask'),
   profile(path: 'profile', name: 'profile'),
+  
   profileEdit(path: 'profileEdit', name: 'profileEdit');
-
-
-
 
   const AppRoutes({required this.path, required this.name});
   final String path;

@@ -68,7 +68,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     context: context,
                     builder: (context) {
                       return Dialog(
-                        insetPadding: const EdgeInsets.symmetric(horizontal: 16),
+                        insetPadding:
+                            const EdgeInsets.symmetric(horizontal: 16),
                         child: Material(
                           borderRadius: BorderRadius.circular(16),
                           child: Container(
@@ -80,7 +81,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 16.0, right: 16),
+                                  padding: const EdgeInsets.only(
+                                      top: 16.0, right: 16),
                                   child: Row(
                                     children: [
                                       const Icon(
@@ -91,7 +93,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       Center(
                                         child: Text(
                                           "Tapşırıq növü seç",
-                                          style: context.typography.subtitle1Medium,
+                                          style: context
+                                              .typography.subtitle1Medium,
                                         ),
                                       ),
                                       const Spacer(),
@@ -107,28 +110,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   height: 20,
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 24.0, right: 24, bottom: 24),
+                                  padding: const EdgeInsets.only(
+                                      left: 24.0, right: 24, bottom: 24),
                                   child: Row(
                                     children: [
                                       Expanded(
                                         child: ElevatedButton(
                                           style: ButtonStyle(
-                                            padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 14)),
+                                            padding: WidgetStateProperty.all(
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 14)),
                                             shape: WidgetStateProperty.all(
-                                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
                                             ),
-                                            backgroundColor: WidgetStateProperty.all(context.colors.primaryColor50),
+                                            backgroundColor:
+                                                WidgetStateProperty.all(context
+                                                    .colors.primaryColor50),
                                             side: WidgetStateProperty.all(
-                                              BorderSide(color: context.colors.primaryColor50),
+                                              BorderSide(
+                                                  color: context
+                                                      .colors.primaryColor50),
                                             ),
                                           ),
-                                          onPressed: () { 
-                                            context.goNamed(AppRoutes.createTask.name, extra: 'connection');
+                                          onPressed: () {
+                                            context.goNamed(
+                                                AppRoutes.createTask.name,
+                                                extra: 'connection');
                                           },
                                           child: Text(
                                             'Yeni qoşulma',
-                                            style: context.typography.body1SemiBold
-                                                .copyWith(color: context.colors.neutralColor100),
+                                            style: context
+                                                .typography.body1SemiBold
+                                                .copyWith(
+                                                    color: context.colors
+                                                        .neutralColor100),
                                           ),
                                         ),
                                       ),
@@ -138,23 +156,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       Expanded(
                                         child: ElevatedButton(
                                           style: ButtonStyle(
-                                            padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 14)),
-
+                                            padding: WidgetStateProperty.all(
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 14)),
                                             shape: WidgetStateProperty.all(
-                                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
                                             ),
-                                            backgroundColor: WidgetStateProperty.all(Colors.white),
+                                            backgroundColor:
+                                                WidgetStateProperty.all(
+                                                    Colors.white),
                                             side: WidgetStateProperty.all(
-                                              BorderSide(color: context.colors.primaryColor50, width: 2),
+                                              BorderSide(
+                                                  color: context
+                                                      .colors.primaryColor50,
+                                                  width: 2),
                                             ),
                                           ),
                                           onPressed: () {
-                                            context.goNamed(AppRoutes.createTask.name, extra: 'problem');
+                                            context.goNamed(
+                                                AppRoutes.createTask.name,
+                                                extra: 'problem');
                                           },
                                           child: Text(
                                             'Problem',
-                                            style: context.typography.body1SemiBold
-                                                .copyWith(color: context.colors.primaryColor50),
+                                            style: context
+                                                .typography.body1SemiBold
+                                                .copyWith(
+                                                    color: context
+                                                        .colors.primaryColor50),
                                           ),
                                         ),
                                       ),
@@ -184,7 +216,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           AppBarIcon(
             iconPath: IconPath.message.toPathSvg,
             onTap: () => context.goNamed(AppRoutes.chat.name),
-
           ),
           const SizedBox(
             width: 14,
@@ -207,11 +238,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               HomeTabView(
                 state: notifier.homeState,
                 tabController: tabController,
-
               ),
               const PerformanceTab(),
               const TasksTab(),
-              context.watch<MainNotifier>().isAdmin ? const OtherTab() : const ProfileTab(),
+              context.watch<MainNotifier>().isAdmin
+                  ? const OtherTab()
+                  : const ProfileTab(),
             ],
           );
         },

@@ -4,6 +4,7 @@ import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:digi_task/features/profile/presentation/notifier/profile_notifier.dart';
 import 'package:digi_task/features/profile/presentation/notifier/profile_state.dart';
+import 'package:digi_task/notifier/home/main/main_notifier.dart';
 import 'package:digi_task/presentation/components/custom_progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,28 +22,45 @@ class ProfileTab extends StatefulWidget {
 }
 
 class _ProfileTabState extends State<ProfileTab> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MainNotifier>().checkAdmin();
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    final isAdmin = context.watch<MainNotifier>().isAdmin;
+    print('Is Admin: $isAdmin');
+
     return Scaffold(
         backgroundColor: context.colors.backgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          leading: IconButton(
-              onPressed: () {
-                context.pop();
-              },
-              icon: SvgPicture.asset(IconPath.arrowleft.toPathSvg)),
-          title: Text('Profil', style: context.typography.subtitle2Medium),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: IconButton(
-                  onPressed: () {},
-                  icon: SvgPicture.asset(IconPath.menu.toPathSvg)),
-            )
-          ],
-        ),
+        appBar: isAdmin
+            ? AppBar(
+                backgroundColor: Colors.white,
+                centerTitle: true,
+                leading: IconButton(
+                    onPressed: () {
+                      context.pop();
+                    },
+                    icon: SvgPicture.asset(IconPath.arrowleft.toPathSvg)),
+                title:
+                    Text('Profil', style: context.typography.subtitle2Medium),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: SvgPicture.asset(IconPath.menu.toPathSvg)),
+                  )
+                ],
+              )
+            : null,
         body: Padding(
           padding: const EdgeInsets.only(left: 16.0, right: 16, top: 24),
           child: Consumer<ProfileNotifier>(builder: (context, notifier, child) {

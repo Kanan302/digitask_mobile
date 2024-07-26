@@ -134,12 +134,9 @@ final class AppRouter {
               ], child: const CreateTaskView()),
             ),
             GoRoute(
-              path: AppRoutes.profileEdit.path,
-              name: AppRoutes.profileEdit.name,
-              builder: (context, state) => ChangeNotifierProvider(
-                create: (context) => GetIt.instance<ProfileNotifier>(),
-                child: const ProfileEditView(),
-              ),
+              path: AppRoutes.anbarMain.path,
+              name: AppRoutes.anbarMain.name,
+              builder: (context, state) => const AnbarMainView(),
             ),
             GoRoute(
               path: AppRoutes.profile.path,
@@ -150,6 +147,14 @@ final class AppRouter {
                   child: const ProfileTab()),
             ),
             GoRoute(
+              path: AppRoutes.profileEdit.path,
+              name: AppRoutes.profileEdit.name,
+              builder: (context, state) => ChangeNotifierProvider(
+                create: (context) => GetIt.instance<ProfileNotifier>(),
+                child: const ProfileEditView(),
+              ),
+            ),
+            GoRoute(
               path: AppRoutes.anbar.path,
               name: AppRoutes.anbar.name,
               builder: (context, state) => ChangeNotifierProvider(
@@ -157,11 +162,6 @@ final class AppRouter {
                     GetIt.instance<AnbarNotifier>()..getAnbarItemList(),
                 child: const AnbarView(),
               ),
-            ),
-            GoRoute(
-              path: AppRoutes.anbarMain.path,
-              name: AppRoutes.anbarMain.name,
-              builder: (context, state) => const AnbarMainView(),
             ),
             GoRoute(
               path: AppRoutes.isciler.path,
@@ -174,5 +174,3 @@ final class AppRouter {
     );
   }
 }
-
-
