@@ -1,10 +1,12 @@
 import 'package:digi_task/core/constants/path/icon_path.dart';
+import 'package:digi_task/core/constants/routes.dart';
 import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:digi_task/notifier/home/main/main_notifier.dart';
 import 'package:digi_task/notifier/home/main/main_state.dart';
 import 'package:digi_task/presentation/pages/home/widgets/tasks_card.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +20,8 @@ import '../widgets/component_title.dart';
 import '../widgets/organizations_card.dart';
 
 class HomeTabView extends StatelessWidget {
-  const HomeTabView({super.key, required this.state, required this.tabController});
+  const HomeTabView(
+      {super.key, required this.state, required this.tabController});
   final TabController tabController;
 
   final MainState state;
@@ -69,25 +72,38 @@ class HomeTabView extends StatelessWidget {
                     ),
                     Consumer<MainNotifier>(
                       builder: (context, notifier, child) {
-                        if (notifier.userTaskModel?.ongoingTasks?.isNotEmpty ?? false) {
+                        if (notifier.userTaskModel?.ongoingTasks?.isNotEmpty ??
+                            false) {
                           final nowDateTime = DateTime.now();
-                          final dateTime = DateTime.parse(notifier.userTaskModel?.ongoingTasks?.first.date ?? '');
-                          String formattedDate = DateFormat('MMM d').format(dateTime);
-                          String nowFormattedDate = DateFormat('MMM d').format(nowDateTime);
+                          final dateTime = DateTime.parse(notifier
+                                  .userTaskModel?.ongoingTasks?.first.date ??
+                              '');
+                          String formattedDate =
+                              DateFormat('MMM d').format(dateTime);
+                          String nowFormattedDate =
+                              DateFormat('MMM d').format(nowDateTime);
 
                           return UserTaskCard(
                             iconRow: Row(
                               children: [
-                                if (notifier.userTaskModel?.ongoingTasks?.first.isInternet == true) ...[
-                                  ServiceType(image: IconPath.internet.toPathSvg, title: "Internet"),
+                                if (notifier.userTaskModel?.ongoingTasks?.first
+                                        .isInternet ==
+                                    true) ...[
+                                  ServiceType(
+                                      image: IconPath.internet.toPathSvg,
+                                      title: "Internet"),
                                 ],
-                                if (notifier.userTaskModel?.ongoingTasks?.first.isTv == true) ...[
+                                if (notifier.userTaskModel?.ongoingTasks?.first
+                                        .isTv ==
+                                    true) ...[
                                   ServiceType(
                                     image: IconPath.tv.toPathSvg,
                                     title: "Tv",
                                   ),
                                 ],
-                                if (notifier.userTaskModel?.ongoingTasks?.first.isVoice == true) ...[
+                                if (notifier.userTaskModel?.ongoingTasks?.first
+                                        .isVoice ==
+                                    true) ...[
                                   ServiceType(
                                     image: IconPath.voice.toPathSvg,
                                     title: "Voice",
@@ -95,15 +111,25 @@ class HomeTabView extends StatelessWidget {
                                 ]
                               ],
                             ),
-                            location: notifier.userTaskModel?.ongoingTasks?.first.location ?? '',
-                            name: notifier.userTaskModel?.ongoingTasks?.first.firstName ?? '',
-                            number: notifier.userTaskModel?.ongoingTasks?.first.contactNumber ?? '',
-                            status: notifier.userTaskModel?.ongoingTasks?.first.status ?? '',
+                            location: notifier.userTaskModel?.ongoingTasks
+                                    ?.first.location ??
+                                '',
+                            name: notifier.userTaskModel?.ongoingTasks?.first
+                                    .firstName ??
+                                '',
+                            number: notifier.userTaskModel?.ongoingTasks?.first
+                                    .contactNumber ??
+                                '',
+                            status: notifier.userTaskModel?.ongoingTasks?.first
+                                    .status ??
+                                '',
                             time: formattedDate == nowFormattedDate
                                 ? "Bu gün, ${notifier.userTaskModel?.ongoingTasks?.first.time ?? ''}"
                                 : "$formattedDate, ${notifier.userTaskModel?.ongoingTasks?.first.time ?? ''}",
                             notifier: notifier,
-                            group: (notifier.userTaskModel?.ongoingTasks?.first.group?.isNotEmpty ?? false)
+                            group: (notifier.userTaskModel?.ongoingTasks?.first
+                                        .group?.isNotEmpty ??
+                                    false)
                                 ? '${notifier.userTaskModel?.ongoingTasks?.first.group?.first.group}'
                                 : "Empty group",
                           );
@@ -116,7 +142,9 @@ class HomeTabView extends StatelessWidget {
                     ),
                     ComponentTitle(
                       title: 'Tədbirlər',
-                      onPressed: () {},
+                      onPressed: () {
+                        context.goNamed(AppRoutes.events.name);
+                      },
                     ),
                     const SizedBox(
                       height: 16,
@@ -136,9 +164,12 @@ class HomeTabView extends StatelessWidget {
                       Consumer<PerformanceNotifier>(
                         builder: (context, notifier, child) {
                           if (notifier.state is PerformanceLoading) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           } else if (notifier.state is PerformanceSuccess) {
-                            final performance = (notifier.state as PerformanceSuccess).performanceList;
+                            final performance =
+                                (notifier.state as PerformanceSuccess)
+                                    .performanceList;
                             return PerformanceTable(performance: performance);
                           }
                           return const SizedBox.shrink();

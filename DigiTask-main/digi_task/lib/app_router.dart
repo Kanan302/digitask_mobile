@@ -1,7 +1,7 @@
 import 'package:digi_task/core/constants/routes.dart';
-import 'package:digi_task/features/anbar/anbar_mainview.dart';
 import 'package:digi_task/features/anbar/presentation/notifier/anbar_notifier.dart';
-import 'package:digi_task/features/anbar/presentation/view/anbar_view.dart';
+import 'package:digi_task/features/anbar/presentation/view/anbar_main.dart';
+import 'package:digi_task/features/events/events_page.dart';
 import 'package:digi_task/features/isciler/isciler_view.dart';
 import 'package:digi_task/features/performance/presentation/notifier/performance_notifier.dart';
 import 'package:digi_task/features/profile/presentation/notifier/profile_notifier.dart';
@@ -134,11 +134,6 @@ final class AppRouter {
               ], child: const CreateTaskView()),
             ),
             GoRoute(
-              path: AppRoutes.anbarMain.path,
-              name: AppRoutes.anbarMain.name,
-              builder: (context, state) => const AnbarMainView(),
-            ),
-            GoRoute(
               path: AppRoutes.profile.path,
               name: AppRoutes.profile.name,
               builder: (context, state) => ChangeNotifierProvider(
@@ -160,13 +155,18 @@ final class AppRouter {
               builder: (context, state) => ChangeNotifierProvider(
                 create: (context) =>
                     GetIt.instance<AnbarNotifier>()..getAnbarItemList(),
-                child: const AnbarView(),
+                child: const AnbarMain(),
               ),
             ),
             GoRoute(
               path: AppRoutes.isciler.path,
               name: AppRoutes.isciler.name,
               builder: (context, state) => const IscilerView(),
+            ),
+            GoRoute(
+              path: AppRoutes.events.path,
+              name: AppRoutes.events.name,
+              builder: (context, state) => const EventsPage(),
             ),
           ],
         ),

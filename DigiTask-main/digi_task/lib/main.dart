@@ -1,5 +1,4 @@
 import 'package:digi_task/app_router.dart';
-
 import 'package:digi_task/notifier/auth/auth_notifier.dart';
 import 'package:digi_task/notifier/home/main/main_notifier.dart';
 import 'package:digi_task/notifier/theme/theme_scope.dart';
@@ -9,10 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-
 import 'injection.dart';
-
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

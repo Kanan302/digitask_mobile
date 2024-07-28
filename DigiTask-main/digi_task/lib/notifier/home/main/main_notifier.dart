@@ -4,6 +4,7 @@ import 'package:digi_task/data/repository/home_repository.dart';
 import 'package:digi_task/data/services/local/shared_service.dart';
 import 'package:digi_task/injection.dart';
 import 'package:digi_task/notifier/home/main/main_state.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class MainNotifier extends ChangeNotifier {
@@ -13,6 +14,7 @@ class MainNotifier extends ChangeNotifier {
   final preference = getIt.get<SharedPreferenceService>();
   bool isAdmin = false;
   UserTaskModel? userTaskModel;
+  List<Meetings> meetings = [];
 
   Future<void> fetchUserTask() async {
     homeState = MainLoading();
@@ -29,6 +31,18 @@ class MainNotifier extends ChangeNotifier {
     } else {
       homeState = MainError();
       notifyListeners();
+    }
+  }
+
+  Future<void> fetchMeetings() async {
+    final response =
+        await Dio().get('http://135.181.42.192/services/meetings/');
+    if (response.statusCode == 200) {
+      meetings =
+          (response.data as List).map((e) => Meetings.fromJson(e)).toList();
+      notifyListeners();
+    } else {
+      throw Exception('Failed to load meetings');
     }
   }
 

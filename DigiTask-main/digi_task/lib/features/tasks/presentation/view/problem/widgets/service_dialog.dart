@@ -48,104 +48,64 @@ class ServiceDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    if (taskData.isInternet == true)
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(16),
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(
-                              width: 4,
-                              color: Colors.yellow,
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateProblem(
-                                serviceType: 'Internet',
-                                taskId: taskId,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Internet',
-                          style: context.typography.body2SemiBold.copyWith(
-                            color: context.colors.primaryColor50,
-                          ),
-                        ),
+                    if (taskData.isInternet == true &&
+                        taskData.internet == null)
+                      _buildServiceButton(
+                        context,
+                        'Internet',
+                        taskId,
                       ),
-                    if (taskData.isTv == true)
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(16),
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(
-                              width: 4,
-                              color: Colors.yellow,
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateProblem(
-                                serviceType: 'Tv',
-                                taskId: taskId,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Tv',
-                          style: context.typography.body2SemiBold.copyWith(
-                            color: context.colors.primaryColor50,
-                          ),
-                        ),
+                    if (taskData.isTv == true && taskData.tv == null)
+                      _buildServiceButton(
+                        context,
+                        'Tv',
+                        taskId,
                       ),
-                    if (taskData.isVoice == true)
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(16),
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            side: const BorderSide(
-                              width: 4,
-                              color: Colors.yellow,
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateProblem(
-                                serviceType: 'Voice',
-                                taskId: taskId,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Voice',
-                          style: context.typography.body2SemiBold.copyWith(
-                            color: context.colors.primaryColor50,
-                          ),
-                        ),
+                    if (taskData.isVoice == true && taskData.voice == null)
+                      _buildServiceButton(
+                        context,
+                        'Voice',
+                        taskId,
                       ),
                   ],
                 ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  ElevatedButton _buildServiceButton(
+      BuildContext context, String serviceType, int taskId) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(16),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: const BorderSide(
+            width: 4,
+            color: Colors.yellow,
+          ),
+        ),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CreateProblem(
+              serviceType: serviceType,
+              taskId: taskId,
+            ),
+          ),
+        );
+      },
+      child: Text(
+        serviceType,
+        style: context.typography.body2SemiBold.copyWith(
+          color: context.colors.primaryColor50,
         ),
       ),
     );

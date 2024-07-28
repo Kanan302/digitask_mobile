@@ -61,6 +61,9 @@ class _ProblemTaskState extends State<ProblemTask> {
                 return const Center(child: Text('No data available'));
               } else {
                 final taskData = snapshot.data!;
+                final availableServiceTypes =
+                    _getAvailableServiceTypes(taskData);
+                final hasAvailableServices = availableServiceTypes.isNotEmpty;
                 return Container(
                   color: Colors.white,
                   child: Column(
@@ -76,7 +79,8 @@ class _ProblemTaskState extends State<ProblemTask> {
                             textAlign: TextAlign.right,
                             decoration: InputDecoration(
                               labelText: data['title'] as String,
-                              labelStyle: const TextStyle(color: Colors.black, fontSize: 18),
+                              labelStyle: const TextStyle(
+                                  color: Colors.black, fontSize: 18),
                               prefixIcon: data['icon'] != null
                                   ? Icon(
                                       data['icon'] as IconData,
@@ -112,54 +116,56 @@ class _ProblemTaskState extends State<ProblemTask> {
                           taskData: taskData,
                         ),
                       const SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return ServiceDialog(
-                                  serviceType: widget.serviceType,
-                                  taskId: widget.taskId,
-                                  taskData: widget.taskData,
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(16.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Problem anketi',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
+                      if (hasAvailableServices)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return ServiceDialog(
+                                    serviceType: widget.serviceType,
+                                    taskId: widget.taskId,
+                                    taskData: widget.taskData,
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
                                   ),
-                                ),
-                                Icon(
-                                  Icons.add,
-                                  color: Colors.blue,
-                                ),
-                              ],
+                                ],
+                              ),
+                              child: const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Problem anketi',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.add,
+                                    color: Colors.blue,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
                       const SizedBox(height: 16),
                     ],
                   ),
@@ -199,5 +205,19 @@ class _ProblemTaskState extends State<ProblemTask> {
       default:
         return '';
     }
+  }
+
+  List<String> _getAvailableServiceTypes(TaskModel taskData) {
+    List<String> availableServiceTypes = [];
+    if (taskData.isInternet == true && taskData.internet == null) {
+      availableServiceTypes.add('Internet');
+    }
+    if (taskData.isTv == true && taskData.tv == null) {
+      availableServiceTypes.add('Tv');
+    }
+    if (taskData.isVoice == true && taskData.voice == null) {
+      availableServiceTypes.add('Voice');
+    }
+    return availableServiceTypes;
   }
 }
