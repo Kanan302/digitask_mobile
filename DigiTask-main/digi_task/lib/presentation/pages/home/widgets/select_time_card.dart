@@ -1,39 +1,99 @@
-import 'package:digi_task/core/constants/theme/theme_ext.dart';
-import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../../../core/constants/path/icon_path.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class SelectTimeCard extends StatefulWidget {
-  const SelectTimeCard({super.key, required this.text});
-  final String text;
+  const SelectTimeCard({
+    super.key,
+    required this.initialDate,
+    required this.onDateSelected,
+  });
+
+  final DateTime initialDate;
+  final ValueChanged<DateTime> onDateSelected;
+
   @override
   State<SelectTimeCard> createState() => _SelectTimeCardState();
 }
 
 class _SelectTimeCardState extends State<SelectTimeCard> {
+  late DateTime selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = widget.initialDate;
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDialog<DateTime>(
+      context: context,
+      builder: (BuildContext context) {
+        DateTime tempSelectedDate = selectedDate;
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TableCalendar(
+                      locale: "en_US",
+                      rowHeight: 43,
+                      headerStyle: const HeaderStyle(
+                          formatButtonVisible: false, titleCentered: true),
+                      availableGestures: AvailableGestures.all,
+                      focusedDay: tempSelectedDate,
+                      firstDay: DateTime.utc(2010, 10, 16),
+                      lastDay: DateTime.utc(2030, 3, 14),
+                      selectedDayPredicate: (day) =>
+                          isSameDay(day, tempSelectedDate),
+                      onDaySelected: (day, focusedDay) {
+                        setState(() {
+                          tempSelectedDate = day;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context, tempSelectedDate);
+                      },
+                      child: const Text('Select'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+      widget.onDateSelected(selectedDate);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.colors.neutralColor100,
-          borderRadius: BorderRadius.circular(8),
-        ),
+    return GestureDetector(
+      onTap: () => _selectDate(context),
+      child: Card(
+        margin: const EdgeInsets.all(5.0),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 11.0),
+          padding: const EdgeInsets.all(10.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const Icon(Icons.calendar_today),
+              const SizedBox(width: 10),
               Text(
-                widget.text,
-                style: context.typography.body1SemiBold.copyWith(color: context.colors.neutralColor50),
+                selectedDate.toString().split(' ')[0],
+                style: const TextStyle(fontSize: 16),
               ),
-              const SizedBox(
-                width: 12,
-              ),
-              SvgPicture.asset(IconPath.date.toPathSvg),
             ],
           ),
         ),

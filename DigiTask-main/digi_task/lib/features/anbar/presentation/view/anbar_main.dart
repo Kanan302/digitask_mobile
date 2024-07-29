@@ -1,5 +1,6 @@
 import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
+import 'package:digi_task/features/anbar/presentation/view/anbar_history.dart';
 import 'package:digi_task/features/anbar/presentation/view/anbar_view.dart';
 import 'package:digi_task/features/anbar/presentation/view/widgets/anbar_dialog.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,7 @@ class _AnbarMainState extends State<AnbarMain>
         controller: _tabController,
         children: const [
           AnbarView(),
-          Center(child: Text("Anbar Tarixçəsi")),
+          AnbarHistoryView(),
         ],
       ),
     );

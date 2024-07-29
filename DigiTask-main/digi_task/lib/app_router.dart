@@ -3,6 +3,7 @@ import 'package:digi_task/features/anbar/presentation/notifier/anbar_notifier.da
 import 'package:digi_task/features/anbar/presentation/view/anbar_main.dart';
 import 'package:digi_task/features/events/events_page.dart';
 import 'package:digi_task/features/isciler/isciler_view.dart';
+import 'package:digi_task/features/performance/domain/repository/performance_repository.dart';
 import 'package:digi_task/features/performance/presentation/notifier/performance_notifier.dart';
 import 'package:digi_task/features/profile/presentation/notifier/profile_notifier.dart';
 import 'package:digi_task/features/profile/presentation/view/profile_edit_view.dart';
@@ -32,6 +33,8 @@ final class AppRouter {
   late final GoRouter _appRouter;
   AppRouter({
     required AuthNotifier authNotifier,
+    required DateTime startDate,
+    required DateTime endDate,
   }) {
     _appRouter = GoRouter(
       initialLocation: AppRoutes.splash.path,
@@ -40,19 +43,10 @@ final class AppRouter {
       redirect: (context, state) {
         final authState = authNotifier.authState;
 
-        // if (authState == AuthState.onboarding) {
-        //   if (state.matchedLocation == AppRoutes.onboarding.path) {
-        //     return null;
-        //   }
-
-        //   return AppRoutes.onboarding.path;
-        // }
-        //  else
         if (authState == AuthState.unauthenticated) {
           if (state.matchedLocation == AppRoutes.login.path) {
             return null;
           }
-
           return AppRoutes.onboarding.path;
         } else if (authState == AuthState.authenticated) {
           final isOnLoginPage = state.matchedLocation == AppRoutes.login.path;
@@ -62,7 +56,6 @@ final class AppRouter {
             return AppRoutes.home.path;
           }
         }
-
         return state.matchedLocation;
       },
       routes: [
@@ -95,19 +88,24 @@ final class AppRouter {
                   ..checkAdmin(),
               ),
               ChangeNotifierProvider(
-                create: (context) =>
-                    GetIt.instance<PerformanceNotifier>()..fetchPerfomance(),
+                create: (context) => PerformanceNotifier(
+                  GetIt.instance<PerformanceRepository>(),
+                  startDate,
+                  endDate,
+                )..fetchPerformance(startDate, endDate),
               ),
               ChangeNotifierProvider(
                 create: (context) => GetIt.instance<TaskNotifier>()
                   ..fetchTasks(queryType: 'connection'),
               ),
               ChangeNotifierProvider(
-                create: (context) =>
-                    GetIt.instance<ProfileNotifier>()..getUserInformation(),
+                create: (context) => GetIt.instance<ProfileNotifier>()
+                  ..getUserInformation(),
               ),
+              // Uncomment if needed
               // ChangeNotifierProvider(
-              //   create: (context) => GetIt.instance<AnbarNotifier>()..getAnbarItemList(),
+              //   create: (context) => GetIt.instance<AnbarNotifier>()
+              //     ..getAnbarItemList(),
               // ),
             ],
             child: const HomePage(),
@@ -126,20 +124,26 @@ final class AppRouter {
             GoRoute(
               path: AppRoutes.createTask.path,
               name: AppRoutes.createTask.name,
-              builder: (context, state) => MultiProvider(providers: [
-                ChangeNotifierProvider(
-                    create: (context) => GetIt.instance<TaskNotifier>()),
-                ChangeNotifierProvider(
-                    create: (context) => GetIt.instance<MainNotifier>()),
-              ], child: const CreateTaskView()),
+              builder: (context, state) => MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(
+                    create: (context) => GetIt.instance<TaskNotifier>(),
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => GetIt.instance<MainNotifier>(),
+                  ),
+                ],
+                child: const CreateTaskView(),
+              ),
             ),
             GoRoute(
               path: AppRoutes.profile.path,
               name: AppRoutes.profile.name,
               builder: (context, state) => ChangeNotifierProvider(
-                  create: (context) =>
-                      GetIt.instance<ProfileNotifier>()..getUserInformation(),
-                  child: const ProfileTab()),
+                create: (context) =>
+                    GetIt.instance<ProfileNotifier>()..getUserInformation(),
+                child: const ProfileTab(),
+              ),
             ),
             GoRoute(
               path: AppRoutes.profileEdit.path,

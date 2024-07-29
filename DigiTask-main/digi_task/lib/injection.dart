@@ -31,9 +31,9 @@ import 'notifier/auth/login/login_notifier.dart';
 final getIt = GetIt.instance;
 
 Future<void> init() async {
-
   getIt.registerFactory(() => SharedPreferenceService());
-  getIt.registerFactory(() => SecureService(secureStorage: const FlutterSecureStorage()));
+  getIt.registerFactory(
+      () => SecureService(secureStorage: const FlutterSecureStorage()));
 
   getIt.registerLazySingleton(() => AuthService());
   getIt.registerLazySingleton(() => AnbarNetworkServiceImpl());
@@ -42,15 +42,11 @@ Future<void> init() async {
   getIt.registerLazySingleton(() => TaskNetworkServiceImpl());
   getIt.registerLazySingleton(() => HomeService());
 
-
-
-
   getIt.registerSingleton<IAuthRepository>(
     AuthRepository(
       authDataSource: getIt(),
       secureStorage: getIt(),
       preferenceService: getIt(),
-
     ),
   );
 
@@ -64,7 +60,7 @@ Future<void> init() async {
   getIt.registerSingleton<PerformanceRepository>(
     PerformanceRepositoryImpl(performanceService: getIt()),
   );
-  
+
   getIt.registerSingleton<ITaskRepository>(
     TaskRepositoryImpl(taskService: getIt()),
   );
@@ -72,17 +68,25 @@ Future<void> init() async {
     AnbarItemRepositoryImpl(anbarNetworkService: getIt()),
   );
 
+  DateTime defaultStartDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime defaultEndDate = DateTime.now();
+
   getIt.registerFactory(() => LoginNotifier(getIt()));
-  getIt.registerFactory(() => PerformanceNotifier(getIt()));
+  getIt.registerFactory(() => PerformanceNotifier(
+        getIt(),
+        defaultStartDate,
+        defaultEndDate,
+      ));
   getIt.registerFactory(() => TaskNotifier(getIt()));
   getIt.registerFactory(() => ProfileNotifier(getIt()));
   getIt.registerFactory(() => AnbarNotifier(getIt()));
-
   getIt.registerFactory(() => MainNotifier(getIt()));
 
+  getIt.registerSingleton(AuthNotifier(getIt())..checkAuth());
 
-
-  getIt.registerSingleton(AuthNotifier(getIt())..checkAuth()); 
-  
-  getIt.registerSingleton(AppRouter(authNotifier: getIt()));
+  getIt.registerSingleton(AppRouter(
+    authNotifier: getIt(),
+    startDate: defaultStartDate,
+    endDate: defaultEndDate,
+  ));
 }

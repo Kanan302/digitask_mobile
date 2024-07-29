@@ -89,20 +89,22 @@ class _AnbarViewState extends State<AnbarView> {
                   Expanded(
                     flex: 2,
                     child: Center(
-                        child: Text(
-                      'Model',
-                      style: context.typography.body1SemiBold
-                          .copyWith(color: context.colors.neutralColor20),
-                    )),
+                      child: Text(
+                        'Model',
+                        style: context.typography.body1SemiBold
+                            .copyWith(color: context.colors.neutralColor20),
+                      ),
+                    ),
                   ),
                   Expanded(
                     flex: 2,
                     child: Center(
-                        child: Text(
-                      'Sayı',
-                      style: context.typography.body1SemiBold
-                          .copyWith(color: context.colors.neutralColor20),
-                    )),
+                      child: Text(
+                        'Sayı',
+                        style: context.typography.body1SemiBold
+                            .copyWith(color: context.colors.neutralColor20),
+                      ),
+                    ),
                   ),
                 ],
               ),

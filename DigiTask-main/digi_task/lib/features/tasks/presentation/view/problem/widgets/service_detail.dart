@@ -23,6 +23,8 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
   bool isEditing = false;
   late TaskModel task;
 
+  final Map<String, dynamic> _updatedFields = {};
+
   @override
   void initState() {
     super.initState();
@@ -110,7 +112,7 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
                 onPressed: () {
                   setState(() {
                     if (isEditing) {
-                      _saveChanges();
+                      onSave();
                     }
                     isEditing = !isEditing;
                   });
@@ -141,13 +143,13 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildDetailRow('Modem S/N', internetData.modemSN,
-            (value) => internetData.modemSN = value),
+            (value) => _onFieldChanged('modemSN', value)),
         _buildDetailRow('Optik Kabel', internetData.optical_cable,
-            (value) => internetData.optical_cable = value),
+            (value) => _onFieldChanged('optical_cable', value)),
         _buildDetailRow('Fast Connector', internetData.fastconnector,
-            (value) => internetData.fastconnector = value),
+            (value) => _onFieldChanged('fastconnector', value)),
         _buildDetailRow('Signal', internetData.siqnal,
-            (value) => internetData.siqnal = value),
+            (value) => _onFieldChanged('siqnal', value)),
         if (internetData.photoModem != null) ...[
           const SizedBox(height: 16),
           const Text(
@@ -173,14 +175,14 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildDetailRow(
-            'Modem S/N', tvData.modemSN, (value) => tvData.modemSN = value),
-        _buildDetailRow(
-            'RG6 Kabel', tvData.rg6Cable, (value) => tvData.rg6Cable = value),
+        _buildDetailRow('Modem S/N', tvData.modemSN,
+            (value) => _onFieldChanged('modemSN', value)),
+        _buildDetailRow('RG6 Kabel', tvData.rg6Cable,
+            (value) => _onFieldChanged('rg6Cable', value)),
         _buildDetailRow('F-Connector', tvData.fConnector,
-            (value) => tvData.fConnector = value),
-        _buildDetailRow(
-            'Splitter', tvData.splitter, (value) => tvData.splitter = value),
+            (value) => _onFieldChanged('fConnector', value)),
+        _buildDetailRow('Splitter', tvData.splitter,
+            (value) => _onFieldChanged('splitter', value)),
         if (tvData.photoModem != null) ...[
           const SizedBox(height: 16),
           const Text(
@@ -207,11 +209,11 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildDetailRow('Modem S/N', voiceData.modemSN,
-            (value) => voiceData.modemSN = value),
+            (value) => _onFieldChanged('modemSN', value)),
         _buildDetailRow('Home Number', voiceData.homeNumber,
-            (value) => voiceData.homeNumber = value),
+            (value) => _onFieldChanged('homeNumber', value)),
         _buildDetailRow('Password', voiceData.password,
-            (value) => voiceData.password = value),
+            (value) => _onFieldChanged('password', value)),
         if (voiceData.photoModem != null) ...[
           const SizedBox(height: 16),
           const Text(
@@ -272,7 +274,16 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
     );
   }
 
+  void _onFieldChanged(String fieldName, String newValue) {
+    _updatedFields[fieldName] = newValue;
+  }
+
   Future<void> _updateTaskData(String serviceType, dynamic data) async {
+    if (_updatedFields.isEmpty) {
+      print('No fields have been changed.');
+      return;
+    }
+
     String url;
 
     if (serviceType == 'Internet') {
@@ -282,77 +293,38 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
     } else if (serviceType == 'Voice') {
       url = 'http://135.181.42.192/services/update_voice/${widget.taskId}/';
     } else {
-      print('Unknown service type: $serviceType');
+      print('Unknown service type.');
       return;
     }
 
     try {
-      print('Sending data to $url');
-
       MultipartFile? photoFile;
+
       if (data.photoModem != null) {
-        if (Uri.tryParse(data.photoModem!)?.hasAbsolutePath ?? false) {
-          var fileInfo =
-              await DefaultCacheManager().getFileFromCache(data.photoModem!);
-          fileInfo ??=
-              await DefaultCacheManager().downloadFile(data.photoModem!);
-          photoFile = await MultipartFile.fromFile(fileInfo.file.path);
-        } else {
-          photoFile = await MultipartFile.fromFile(data.photoModem!);
+        final fileInfo =
+            await DefaultCacheManager().downloadFile(data.photoModem!);
+        if (fileInfo != null && fileInfo.file.existsSync()) {
+          photoFile = await MultipartFile.fromFile(fileInfo.file.path,
+              filename: 'photoModem.jpg');
         }
       }
 
-      FormData formData = FormData.fromMap({
-        'photo_modem': photoFile,
-        'modem_SN': data.modemSN,
-        if (serviceType == 'Tv') 'rg6_cable': data.rg6Cable,
-        if (serviceType == 'Tv') 'f_connector': data.fConnector,
-        if (serviceType == 'Tv') 'splitter': data.splitter,
-        if (serviceType == 'Voice') 'home_number': data.homeNumber,
-        if (serviceType == 'Voice') 'password': data.password,
-        if (serviceType == 'Internet') 'optical_cable': data.optical_cable,
-        if (serviceType == 'Internet') 'fastconnector': data.fastconnector,
-        if (serviceType == 'Internet') 'siqnal': data.siqnal,
-      });
-      print('FormData: ${formData.fields}');
+      if (photoFile != null) {
+        _updatedFields['photoModem'] = photoFile;
+      }
 
-      Response response = await Dio().put(
-        url,
-        data: formData,
-      );
+      FormData formData = FormData.fromMap(_updatedFields);
 
-      print('Response status: ${response.statusCode}');
-      print('Response data: ${response.data}');
+      var response = await Dio().patch(url, data: formData);
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$serviceType updated successfully!')),
-        );
+        print('Data updated successfully.');
+        _updatedFields.clear();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Failed to update $serviceType: ${response.data}')),
-        );
+        print('Failed to update data. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      if (e is DioException) {
-        print('DioException: ${e.response?.data}');
-        if (e.response?.statusCode == 404) {
-          print('Resource not found. Check taskId.');
-        }
-      } else {
-        print('Error: $e');
-      }
-    }
-  }
-
-  void _saveChanges() {
-    if (widget.serviceType == 'Internet' && task.internet != null) {
-      _updateTaskData('Internet', task.internet!);
-    } else if (widget.serviceType == 'Tv' && task.tv != null) {
-      _updateTaskData('Tv', task.tv!);
-    } else if (widget.serviceType == 'Voice' && task.voice != null) {
-      _updateTaskData('Voice', task.voice!);
+      print('Error updating data: $e');
     }
   }
 }

@@ -3,13 +3,18 @@ import 'package:digi_task/features/performance/presentation/notifier/performance
 import 'package:flutter/material.dart';
 
 class PerformanceNotifier extends ChangeNotifier {
-  PerformanceNotifier(this.performanceRepository);
+  PerformanceNotifier(this.performanceRepository, this.startDate, this.endDate);
+
   final PerformanceRepository performanceRepository;
+  final DateTime startDate;
+  final DateTime endDate;
+
   PerformanceState state = PerformanceInitial();
-  Future<void> fetchPerfomance() async {
+
+  Future<void> fetchPerformance(DateTime startDate, DateTime endDate) async {
     state = PerformanceLoading();
     notifyListeners();
-    final result = await performanceRepository.getPerformance();
+    final result = await performanceRepository.getPerformance(startDate, endDate);
     if (result.isSuccess()) {
       final performanceModel = result.tryGetSuccess();
       state = PerformanceSuccess(performanceList: performanceModel);
@@ -23,3 +28,4 @@ class PerformanceNotifier extends ChangeNotifier {
     }
   }
 }
+

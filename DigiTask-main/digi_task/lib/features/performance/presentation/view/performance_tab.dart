@@ -15,37 +15,62 @@ class PerformanceTab extends StatefulWidget {
 }
 
 class _PerformanceTabState extends State<PerformanceTab> {
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Column(
-        children: [
-          const SizedBox(height: 12),
-          const Row(
-            children: [
-              SelectTimeCard(text: '2024-03-13'),
-              SizedBox(width: 16),
-              SelectTimeCard(text: '2024-05-27'),
-            ],
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Consumer<PerformanceNotifier>(
-            builder: (context, notifier, child) {
-              if (notifier.state is PerformanceLoading) {
-                return const Center(child: CustomProgressIndicator());
-              } else if (notifier.state is PerformanceSuccess) {
-                final performance =
-                    (notifier.state as PerformanceSuccess).performanceList;
-                return PerformanceTable(performance: performance);
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SelectTimeCard(
+                  initialDate: startDate,
+                  onDateSelected: (date) {
+                    setState(() {
+                      startDate = date;
+                    });
+                    _fetchPerformance(context);
+                  },
+                ),
+                const SizedBox(width: 16),
+                SelectTimeCard(
+                  initialDate: endDate,
+                  onDateSelected: (date) {
+                    setState(() {
+                      endDate = date;
+                    });
+                    _fetchPerformance(context);
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Consumer<PerformanceNotifier>(
+              builder: (context, notifier, child) {
+                if (notifier.state is PerformanceLoading) {
+                  return const Center(child: CustomProgressIndicator());
+                } else if (notifier.state is PerformanceSuccess) {
+                  final performance =
+                      (notifier.state as PerformanceSuccess).performanceList;
+                  return PerformanceTable(performance: performance);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  void _fetchPerformance(BuildContext context) {
+    Provider.of<PerformanceNotifier>(context, listen: false)
+        .fetchPerformance(startDate, endDate);
   }
 }
