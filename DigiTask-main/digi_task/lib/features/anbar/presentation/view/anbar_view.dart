@@ -114,30 +114,27 @@ class _AnbarViewState extends State<AnbarView> {
             child: Consumer<AnbarNotifier>(
               builder: (context, notifier, child) {
                 if (notifier.state is AnbarLoading) {
-                  return const Center(
-                    child: CustomProgressIndicator(),
-                  );
+                  return const Center(child: CustomProgressIndicator());
                 } else if (notifier.state is AnbarSuccess) {
                   final state = notifier.state as AnbarSuccess;
                   final filteredItems = filterAnbarItems(state.anbarList);
                   return Container(
                     decoration: BoxDecoration(
-                        color: context.colors.neutralColor100,
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(12),
-                            bottomRight: Radius.circular(12))),
+                      color: context.colors.neutralColor100,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
                     child: ListView.builder(
                       itemCount: filteredItems.length,
                       itemBuilder: (context, index) {
                         return Column(
                           children: [
                             Divider(
-                              color: context.colors.neutralColor90,
-                              height: 0,
-                            ),
-                            const SizedBox(
-                              height: 7,
-                            ),
+                                color: context.colors.neutralColor90,
+                                height: 0),
+                            const SizedBox(height: 7),
                             Padding(
                               padding: const EdgeInsets.only(
                                   left: 16.0, right: 16, top: 10),
@@ -156,8 +153,8 @@ class _AnbarViewState extends State<AnbarView> {
                                         overflow: TextOverflow.ellipsis,
                                         style: context.typography.body2SemiBold
                                             .copyWith(
-                                                color: context
-                                                    .colors.primaryColor50),
+                                          color: context.colors.primaryColor50,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -182,8 +179,8 @@ class _AnbarViewState extends State<AnbarView> {
                                         maxLines: 1,
                                         style: context.typography.body2SemiBold
                                             .copyWith(
-                                                color: context
-                                                    .colors.primaryColor50),
+                                          color: context.colors.primaryColor50,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -194,17 +191,15 @@ class _AnbarViewState extends State<AnbarView> {
                                         "${filteredItems[index].number}",
                                         style: context.typography.body2SemiBold
                                             .copyWith(
-                                                color: context
-                                                    .colors.primaryColor50),
+                                          color: context.colors.primaryColor50,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            )
+                            const SizedBox(height: 10),
                           ],
                         );
                       },
@@ -214,7 +209,7 @@ class _AnbarViewState extends State<AnbarView> {
                 return const SizedBox.shrink();
               },
             ),
-          )
+          ),
         ],
       ),
     );

@@ -6,11 +6,8 @@ class AnbarHistoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child:
-            Text("Anbar Tarixçəsi", style: context.typography.subtitle2Medium),
-      ),
+    return Center(
+      child: Text("Anbar Tarixçəsi", style: context.typography.subtitle2Medium),
     );
   }
 }

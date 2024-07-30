@@ -16,33 +16,28 @@ class AnbarMain extends StatefulWidget {
   State<AnbarMain> createState() => _AnbarMainState();
 }
 
-class _AnbarMainState extends State<AnbarMain>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _AnbarMainState extends State<AnbarMain> {
+  int _selectedIndex = 0;
+
   final ValueNotifier<String> _appBarTitleNotifier =
       ValueNotifier<String>('Anbar');
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this)
-      ..addListener(() {
-        if (_tabController.indexIsChanging) {
-          switch (_tabController.index) {
-            case 0:
-              _appBarTitleNotifier.value = 'Anbar';
-              break;
-            case 1:
-              _appBarTitleNotifier.value = 'Anbar Tarixçəsi';
-              break;
-          }
-        }
-      });
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      switch (index) {
+        case 0:
+          _appBarTitleNotifier.value = 'Anbar';
+          break;
+        case 1:
+          _appBarTitleNotifier.value = 'Anbar Tarixçəsi';
+          break;
+      }
+    });
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     _appBarTitleNotifier.dispose();
     super.dispose();
   }
@@ -55,10 +50,11 @@ class _AnbarMainState extends State<AnbarMain>
         backgroundColor: Colors.white,
         centerTitle: true,
         leading: IconButton(
-            onPressed: () {
-              context.pop();
-            },
-            icon: SvgPicture.asset(IconPath.arrowleft.toPathSvg)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: SvgPicture.asset(IconPath.arrowleft.toPathSvg),
+        ),
         title: ValueListenableBuilder<String>(
           valueListenable: _appBarTitleNotifier,
           builder: (context, title, child) {
@@ -69,29 +65,37 @@ class _AnbarMainState extends State<AnbarMain>
           IconButton(
             onPressed: () {
               showDialog(
-                  context: context,
-                  builder: (context) {
-                    return const AnbarDialog();
-                  });
+                context: context,
+                builder: (context) {
+                  return const AnbarDialog();
+                },
+              );
             },
             icon: SvgPicture.asset(IconPath.import.toPathSvg),
           ),
           const SizedBox(width: 14),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: "Anbar"),
-            Tab(text: "Anbar Tarixçəsi"),
-          ],
-        ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: IndexedStack(
+        index: _selectedIndex,
         children: const [
           AnbarView(),
           AnbarHistoryView(),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.archive),
+            label: 'Anbar',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Anbar Tarixçəsi',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }
