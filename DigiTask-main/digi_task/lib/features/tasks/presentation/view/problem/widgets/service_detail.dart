@@ -22,11 +22,13 @@ class ServiceDetailsWidget extends StatefulWidget {
 class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
   bool isEditing = false;
   late TaskModel task;
+  String selectedServiceType = '';
 
   @override
   void initState() {
     super.initState();
     task = widget.taskData;
+    selectedServiceType = widget.serviceType;
   }
 
   @override
@@ -110,7 +112,7 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
                 onPressed: () {
                   setState(() {
                     if (isEditing) {
-                      _saveChanges();
+                      onSave();
                     }
                     isEditing = !isEditing;
                   });
@@ -269,14 +271,23 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
   Future<void> _updateTaskData(String serviceType, dynamic data) async {
     String url;
 
-    if (serviceType == 'Internet') {
-      url = 'http://135.181.42.192/services/update_internet/${widget.taskId}/';
-    } else if (serviceType == 'Tv') {
-      url = 'http://135.181.42.192/services/update_tv/${widget.taskId}/';
-    } else if (serviceType == 'Voice') {
-      url = 'http://135.181.42.192/services/update_voice/${widget.taskId}/';
+    int? serviceId;
+    if (serviceType == 'Internet' && data is Internet) {
+      serviceId = data.id;
+      url = 'http://135.181.42.192/services/update_internet/$serviceId/';
+    } else if (serviceType == 'Tv' && data is Tv) {
+      serviceId = data.id;
+      url = 'http://135.181.42.192/services/update_tv/$serviceId/';
+    } else if (serviceType == 'Voice' && data is Voice) {
+      serviceId = data.id;
+      url = 'http://135.181.42.192/services/update_voice/$serviceId/';
     } else {
       print('Unknown service type: $serviceType');
+      return;
+    }
+
+    if (serviceId == null) {
+      print('No ID found for $serviceType');
       return;
     }
 

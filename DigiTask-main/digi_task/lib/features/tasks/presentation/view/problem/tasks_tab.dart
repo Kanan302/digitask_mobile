@@ -38,6 +38,9 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
           color: Colors.white,
           child: TabBar(
             onTap: (value) {
+              setState(() {
+                selectedIndex = 0;
+              });
               if (value == 1) {
                 context.read<TaskNotifier>().fetchTasks(queryType: "problem");
               } else {
