@@ -1,5 +1,5 @@
 class TaskModel {
-  int? id;
+  late final int id;
   List<Group>? group;
   String? fullName;
   String? firstName;
@@ -24,7 +24,7 @@ class TaskModel {
   Internet? internet;
 
   TaskModel(
-      {this.id,
+      {required this.id,
       this.group,
       this.fullName,
       this.firstName,

@@ -2,7 +2,7 @@ import 'package:digi_task/core/constants/path/icon_path.dart';
 import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:digi_task/features/profile/presentation/view/other_tab.dart';
-import 'package:digi_task/features/tasks/presentation/view/problem/tasks_tab.dart';
+import 'package:digi_task/features/tasks/presentation/view/problem/tasktab/tasks_tab.dart';
 import 'package:digi_task/notifier/home/main/main_notifier.dart';
 import 'package:digi_task/presentation/pages/home/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';

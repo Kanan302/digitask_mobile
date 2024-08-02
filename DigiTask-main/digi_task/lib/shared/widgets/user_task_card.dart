@@ -17,6 +17,7 @@ class UserTaskCard extends StatelessWidget {
     required this.notifier,
     required this.iconRow,
     required this.group,
+    this.button,
   });
   final String name;
   final String time;
@@ -26,6 +27,7 @@ class UserTaskCard extends StatelessWidget {
   final dynamic notifier;
   final Widget iconRow;
   final String? group;
+  final Widget? button;
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +53,11 @@ class UserTaskCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  iconRow
+                  iconRow,
                 ],
               ),
             ),
-            const SizedBox(
-              height: 12,
-            ),
+            const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Row(
@@ -67,22 +67,20 @@ class UserTaskCard extends StatelessWidget {
                     height: 16,
                     width: 16,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       location,
                       overflow: TextOverflow.ellipsis,
-                      style: context.typography.body2Medium.copyWith(color: context.colors.primaryColor50),
+                      style: context.typography.body2Medium.copyWith(
+                        color: context.colors.primaryColor50,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Row(
@@ -93,122 +91,114 @@ class UserTaskCard extends StatelessWidget {
                     width: 16,
                     color: context.colors.neutralColor50,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8),
                   Text(
                     time,
-                    style: context.typography.body2Medium.copyWith(color: context.colors.neutralColor50),
+                    style: context.typography.body2Medium.copyWith(
+                      color: context.colors.neutralColor50,
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            context.watch<MainNotifier>().isAdmin
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              IconPath.phonegreen.toPathSvg,
-                              height: 16,
-                              width: 16,
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              number,
-                              style: context.typography.body2Medium.copyWith(color: context.colors.successColor60),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: Row(children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                IconPath.unemployer.toPathSvg,
-                                height: 16,
-                                width: 16,
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                group ?? 'Empty Group',
-                                style: context.typography.body2Medium.copyWith(color: context.colors.neutralColor40),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          // Text(task_type ?? ''),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: status == 'waiting'
-                                    ? context.colors.secondaryColor50
-                                    : context.colors.primaryColor50,
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(8), bottomLeft: Radius.circular(8))),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                              child: Text(
-                                status,
-                                style: context.typography.overlineSemiBold.copyWith(
-                                    color: status == 'waiting' ? context.colors.neutralColor40 : Colors.white),
-                              ),
-                            ),
-                          )
-                        ]),
-                      ),
-                    ],
-                  )
-                : Padding(
+            const SizedBox(height: 8),
+            if (context.watch<MainNotifier>().isAdmin)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SvgPicture.asset(
                           IconPath.phonegreen.toPathSvg,
-                          height: 18,
-                          width: 18,
+                          height: 16,
+                          width: 16,
                         ),
-                        const SizedBox(
-                          width: 8,
-                        ),
+                        const SizedBox(width: 8),
                         Text(
                           number,
-                          style: context.typography.body1SemiBold.copyWith(color: context.colors.successColor60),
+                          style: context.typography.body2Medium.copyWith(
+                            color: context.colors.successColor60,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          IconPath.unemployer.toPathSvg,
+                          height: 16,
+                          width: 16,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          group ?? 'Empty Group',
+                          style: context.typography.body2Medium.copyWith(
+                            color: context.colors.neutralColor40,
+                          ),
                         ),
                         const Spacer(),
                         Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: context.colors.primaryColor50, width: 1.5),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 38.0, vertical: 10),
-                            child: Text(
-                              status,
-                              style: context.typography.captionSemiBold.copyWith(color: context.colors.primaryColor50),
+                            color: status == 'waiting'
+                                ? context.colors.secondaryColor50
+                                : context.colors.primaryColor50,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomLeft: Radius.circular(8),
                             ),
                           ),
-                        )
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                              vertical: 4,
+                            ),
+                            child: Text(
+                              status,
+                              style:
+                                  context.typography.overlineSemiBold.copyWith(
+                                color: status == 'waiting'
+                                    ? context.colors.neutralColor40
+                                    : Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  )
+                  ),
+                ],
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      IconPath.phonegreen.toPathSvg,
+                      height: 18,
+                      width: 18,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      number,
+                      style: context.typography.body1SemiBold.copyWith(
+                        color: context.colors.successColor60,
+                      ),
+                    ),
+                    const Spacer(),
+                    button ?? const SizedBox.shrink(),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
