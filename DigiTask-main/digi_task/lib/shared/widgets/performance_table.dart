@@ -40,10 +40,12 @@ class PerformanceTable extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Text(
-                      'Qrup',
-                      style: context.typography.subtitle2SemiBold
-                          .copyWith(color: Colors.white),
+                    child: Center(
+                      child: Text(
+                        'Qrup',
+                        style: context.typography.subtitle2SemiBold
+                            .copyWith(color: Colors.white),
+                      ),
                     ),
                   ),
                   Expanded(
@@ -95,9 +97,11 @@ class PerformanceTable extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                            child: Text(
-                              "${e.group?.group}",
-                              style: context.typography.subtitle2Regular,
+                            child: Center(
+                              child: Text(
+                                e.group?.group ?? '-',
+                                style: context.typography.subtitle2Regular,
+                              ),
                             ),
                           ),
                           Expanded(

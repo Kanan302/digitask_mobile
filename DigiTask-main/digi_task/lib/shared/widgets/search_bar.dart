@@ -10,14 +10,20 @@ class CustomSearchBar extends StatelessWidget {
     required this.fillColor,
     required this.hintText,
     this.isAnbar,
+    required this.onChanged,
+    required this.controller,
   });
   final Color fillColor;
   final String hintText;
   final bool? isAnbar;
+  final ValueChanged<String> onChanged;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
+      onChanged: onChanged,
       style: context.typography.body2Medium.copyWith(color: context.colors.neutralColor10),
       decoration: InputDecoration(
         fillColor: fillColor,

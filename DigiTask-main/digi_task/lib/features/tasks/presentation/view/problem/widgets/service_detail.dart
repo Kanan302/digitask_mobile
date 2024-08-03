@@ -20,9 +20,13 @@ class ServiceDetailsWidget extends StatefulWidget {
 }
 
 class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
-  bool isEditing = false;
   late TaskModel task;
   String selectedServiceType = '';
+  Map<String, bool> isEditingMap = {
+    'Internet': false,
+    'Tv': false,
+    'Voice': false,
+  };
 
   @override
   void initState() {
@@ -47,6 +51,7 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
 
   Widget _buildInternetContainer(Internet internetData) {
     return _buildContainer(
+      serviceType: 'Internet',
       title: 'Internet anketi',
       data: internetData,
       onSave: () => _updateTaskData('Internet', internetData),
@@ -55,6 +60,7 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
 
   Widget _buildTvContainer(Tv tvData) {
     return _buildContainer(
+      serviceType: 'Tv',
       title: 'TV anketi',
       data: tvData,
       onSave: () => _updateTaskData('Tv', tvData),
@@ -63,6 +69,7 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
 
   Widget _buildVoiceContainer(Voice voiceData) {
     return _buildContainer(
+      serviceType: 'Voice',
       title: 'Voice anketi',
       data: voiceData,
       onSave: () => _updateTaskData('Voice', voiceData),
@@ -70,6 +77,7 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
   }
 
   Widget _buildContainer({
+    required String serviceType,
     required String title,
     required dynamic data,
     required VoidCallback onSave,
@@ -106,50 +114,50 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
               ),
               IconButton(
                 icon: Icon(
-                  isEditing ? Icons.save : Icons.edit_outlined,
+                  isEditingMap[serviceType]! ? Icons.save : Icons.edit_outlined,
                   color: Colors.blue,
                 ),
                 onPressed: () {
                   setState(() {
-                    if (isEditing) {
+                    if (isEditingMap[serviceType]!) {
                       onSave();
                     }
-                    isEditing = !isEditing;
+                    isEditingMap[serviceType] = !isEditingMap[serviceType]!;
                   });
                 },
               ),
             ],
           ),
           const SizedBox(height: 16),
-          _buildDetails(data),
+          _buildDetails(data, isEditingMap[serviceType]!),
         ],
       ),
     );
   }
 
-  Widget _buildDetails(dynamic data) {
+  Widget _buildDetails(dynamic data, bool isEditing) {
     if (data is Internet) {
-      return _buildInternetDetails(data);
+      return _buildInternetDetails(data, isEditing);
     } else if (data is Tv) {
-      return _buildTvDetails(data);
+      return _buildTvDetails(data, isEditing);
     } else if (data is Voice) {
-      return _buildVoiceDetails(data);
+      return _buildVoiceDetails(data, isEditing);
     }
     return const SizedBox.shrink();
   }
 
-  Widget _buildInternetDetails(Internet internetData) {
+  Widget _buildInternetDetails(Internet internetData, bool isEditing) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildDetailRow('Modem S/N', internetData.modemSN,
-            (value) => internetData.modemSN = value),
+            (value) => internetData.modemSN = value, isEditing),
         _buildDetailRow('Optik Kabel', internetData.optical_cable,
-            (value) => internetData.optical_cable = value),
+            (value) => internetData.optical_cable = value, isEditing),
         _buildDetailRow('Fast Connector', internetData.fastconnector,
-            (value) => internetData.fastconnector = value),
+            (value) => internetData.fastconnector = value, isEditing),
         _buildDetailRow('Signal', internetData.siqnal,
-            (value) => internetData.siqnal = value),
+            (value) => internetData.siqnal = value, isEditing),
         if (internetData.photoModem != null) ...[
           const SizedBox(height: 16),
           const Text(
@@ -171,18 +179,18 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
     );
   }
 
-  Widget _buildTvDetails(Tv tvData) {
+  Widget _buildTvDetails(Tv tvData, bool isEditing) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildDetailRow(
-            'Modem S/N', tvData.modemSN, (value) => tvData.modemSN = value),
-        _buildDetailRow(
-            'RG6 Kabel', tvData.rg6Cable, (value) => tvData.rg6Cable = value),
+        _buildDetailRow('Modem S/N', tvData.modemSN,
+            (value) => tvData.modemSN = value, isEditing),
+        _buildDetailRow('RG6 Kabel', tvData.rg6Cable,
+            (value) => tvData.rg6Cable = value, isEditing),
         _buildDetailRow('F-Connector', tvData.fConnector,
-            (value) => tvData.fConnector = value),
-        _buildDetailRow(
-            'Splitter', tvData.splitter, (value) => tvData.splitter = value),
+            (value) => tvData.fConnector = value, isEditing),
+        _buildDetailRow('Splitter', tvData.splitter,
+            (value) => tvData.splitter = value, isEditing),
         if (tvData.photoModem != null) ...[
           const SizedBox(height: 16),
           const Text(
@@ -204,16 +212,16 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
     );
   }
 
-  Widget _buildVoiceDetails(Voice voiceData) {
+  Widget _buildVoiceDetails(Voice voiceData, bool isEditing) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildDetailRow('Modem S/N', voiceData.modemSN,
-            (value) => voiceData.modemSN = value),
+            (value) => voiceData.modemSN = value, isEditing),
         _buildDetailRow('Home Number', voiceData.homeNumber,
-            (value) => voiceData.homeNumber = value),
+            (value) => voiceData.homeNumber = value, isEditing),
         _buildDetailRow('Password', voiceData.password,
-            (value) => voiceData.password = value),
+            (value) => voiceData.password = value, isEditing),
         if (voiceData.photoModem != null) ...[
           const SizedBox(height: 16),
           const Text(
@@ -235,8 +243,8 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
     );
   }
 
-  Widget _buildDetailRow(
-      String title, String? value, ValueChanged<String> onChanged) {
+  Widget _buildDetailRow(String title, String? value,
+      ValueChanged<String> onChanged, bool isEditing) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -366,23 +374,6 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
       } else {
         print('Error: $e');
       }
-    }
-  }
-
-  void _saveChanges() {
-    print('Saving changes for ${widget.serviceType}');
-    print('Task data: ${task.toJson()}');
-
-    if (widget.serviceType == 'Internet' && task.internet != null) {
-      _updateTaskData('Internet', task.internet!);
-    } else if (widget.serviceType == 'Tv' && task.tv != null) {
-      _updateTaskData('Tv', task.tv!);
-    } else if (widget.serviceType == 'Voice' && task.voice != null) {
-      _updateTaskData('Voice', task.voice!);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No data to update for ${widget.serviceType}')),
-      );
     }
   }
 }

@@ -18,7 +18,6 @@ class CreateProblem extends StatefulWidget {
 
 class _CreateProblemState extends State<CreateProblem> {
   XFile? imageFile;
-  final _formKey = GlobalKey<FormState>();
   final TextEditingController modemSnController = TextEditingController();
   final TextEditingController rg6KabelController = TextEditingController();
   final TextEditingController fConnectorController = TextEditingController();
@@ -69,83 +68,70 @@ class _CreateProblemState extends State<CreateProblem> {
   }
 
   void saveProblem() async {
-    if (_formKey.currentState!.validate()) {
-      if (imageFile == null) {
+    try {
+      String url = '';
+      Map<String, dynamic> data = {
+        'modem_SN': modemSnController.text,
+        'task': noteController.text,
+      };
+
+      if (widget.serviceType == 'Voice') {
+        url = 'http://135.181.42.192/services/create_voice/';
+        data.addAll({
+          'home_number': homeNumberController.text,
+          'password': passwordController.text,
+        });
+      } else if (widget.serviceType == 'Internet') {
+        url = 'http://135.181.42.192/services/create_internet/';
+        data.addAll({
+          'optical_cable': opticalCableController.text,
+          'fastconnector': fastConnectorController.text,
+          'siqnal': signalController.text,
+        });
+      } else if (widget.serviceType == 'Tv') {
+        url = 'http://135.181.42.192/services/create_tv/';
+        data.addAll({
+          'rg6_cable': rg6KabelController.text,
+          'f_connector': fConnectorController.text,
+          'splitter': splitterController.text,
+        });
+      }
+
+      if (imageFile != null) {
+        data['photo_modem'] = await MultipartFile.fromFile(imageFile!.path);
+      }
+
+      FormData formData = FormData.fromMap(data);
+
+      final response = await dio.post(url, data: formData);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Colors.red,
+          const SnackBar(content: Text('Problem uğurla yadda saxlandı')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
             content: Text(
-              'Modemin arxa fotosunu yükləməlisiniz',
+              'Xəta baş verdi: ${response.statusCode}: ${response.statusMessage}',
             ),
           ),
         );
-        return;
       }
-
-      try {
-        String url = '';
-        Map<String, dynamic> data = {
-          'modem_SN': modemSnController.text,
-          'task': noteController.text,
-        };
-
-        if (widget.serviceType == 'Voice') {
-          url = 'http://135.181.42.192/services/create_voice/';
-          data.addAll({
-            'home_number': homeNumberController.text,
-            'password': passwordController.text,
-          });
-        } else if (widget.serviceType == 'Internet') {
-          url = 'http://135.181.42.192/services/create_internet/';
-          data.addAll({
-            'optical_cable': opticalCableController.text,
-            'fastconnector': fastConnectorController.text,
-            'siqnal': signalController.text,
-          });
-        } else if (widget.serviceType == 'Tv') {
-          url = 'http://135.181.42.192/services/create_tv/';
-          data.addAll({
-            'rg6_cable': rg6KabelController.text,
-            'f_connector': fConnectorController.text,
-            'splitter': splitterController.text,
-          });
-        }
-
-        if (imageFile != null) {
-          data['photo_modem'] = await MultipartFile.fromFile(imageFile!.path);
-        }
-
-        FormData formData = FormData.fromMap(data);
-
-        final response = await dio.post(url, data: formData);
-
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Problem uğurla yadda saxlandı')),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Xəta baş verdi: ${response.statusCode}: ${response.statusMessage}',
-              ),
-            ),
-          );
-        }
-      } catch (e) {
-        if (e is DioError) {
-          print('Error response data: ${e.response?.data}');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Xəta baş verdi: ${e.response?.data}')),
-          );
-        } else {
-          print('Xəta: $e');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Xəta baş verdi: $e')),
-          );
-        }
+    } catch (e) {
+      if (e is DioError) {
+        print('Error response data: ${e.response?.data}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Xəta baş verdi: ${e.response?.data}')),
+        );
+      } else {
+        print('Xəta: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Xəta baş verdi: $e')),
+        );
       }
     }
+    // }
   }
 
   @override
@@ -159,114 +145,110 @@ class _CreateProblemState extends State<CreateProblem> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    'Servis məlumatları',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    widget.serviceType,
+                    style: const TextStyle(
+                      color: Color(0xFF005ABF),
+                      fontSize: 19,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Modemin arxa fotosu',
+                style: TextStyle(fontSize: 16.0, color: Color(0xFF909094)),
+              ),
+              const SizedBox(height: 8.0),
+              imageFile == null
+                  ? _buildImagePickerContainer()
+                  : Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.file(
+                            File(imageFile!.path),
+                            width: double.infinity,
+                            height: 100.0,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        Positioned(
+                          right: 0.0,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                imageFile = null;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+              const SizedBox(height: 8.0),
+              _buildTextFormField('Modem S/N', modemSnController),
+              if (widget.serviceType == 'Voice') ...[
+                _buildTextFormField('Home Number', homeNumberController),
+                _buildTextFormField('Password', passwordController),
+              ] else if (widget.serviceType == 'Internet') ...[
+                _buildTextFormField('Optical Cable', opticalCableController),
+                _buildTextFormField('Fast Connector', fastConnectorController),
+                _buildTextFormField('Signal', signalController),
+              ] else if (widget.serviceType == 'Tv') ...[
                 Row(
                   children: [
-                    const Text(
-                      'Servis məlumatları',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    Expanded(
+                      child:
+                          _buildTextFormField('RG6 Kabel', rg6KabelController),
                     ),
-                    const SizedBox(width: 10),
-                    Text(
-                      widget.serviceType,
-                      style: const TextStyle(
-                        color: Color(0xFF005ABF),
-                        fontSize: 19,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    const SizedBox(width: 16.0),
+                    Expanded(
+                      child: _buildTextFormField(
+                          'F-Connector', fConnectorController),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Modemin arxa fotosu',
-                  style: TextStyle(fontSize: 16.0, color: Color(0xFF909094)),
-                ),
-                const SizedBox(height: 8.0),
-                imageFile == null
-                    ? _buildImagePickerContainer()
-                    : Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.file(
-                              File(imageFile!.path),
-                              width: double.infinity,
-                              height: 100.0,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                          Positioned(
-                            right: 0.0,
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  imageFile = null;
-                                });
-                              },
-                              icon: const Icon(
-                                Icons.close,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                const SizedBox(height: 8.0),
-                _buildTextFormField('Modem S/N', modemSnController),
-                if (widget.serviceType == 'Voice') ...[
-                  _buildTextFormField('Home Number', homeNumberController),
-                  _buildTextFormField('Password', passwordController),
-                ] else if (widget.serviceType == 'Internet') ...[
-                  _buildTextFormField('Optical Cable', opticalCableController),
-                  _buildTextFormField(
-                      'Fast Connector', fastConnectorController),
-                  _buildTextFormField('Signal', signalController),
-                ] else if (widget.serviceType == 'Tv') ...[
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildTextFormField(
-                            'RG6 Kabel', rg6KabelController),
-                      ),
-                      const SizedBox(width: 16.0),
-                      Expanded(
-                        child: _buildTextFormField(
-                            'F-Connector', fConnectorController),
-                      ),
-                    ],
-                  ),
-                  _buildTextFormField('Splitter', splitterController),
-                ],
-                const SizedBox(height: 8.0),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: saveProblem,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF005ABF),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 40),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Yadda saxla',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16.0),
+                _buildTextFormField('Splitter', splitterController),
               ],
-            ),
+              const SizedBox(height: 8.0),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: saveProblem,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF005ABF),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: const Text(
+                    'Yadda saxla',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+            ],
           ),
         ),
       ),
@@ -287,13 +269,6 @@ class _CreateProblemState extends State<CreateProblem> {
           controller: controller,
           readOnly: readOnly,
           maxLines: maxLines,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Bu sahə boş ola bilməz';
-            }
-
-            return null;
-          },
           decoration: InputDecoration(
             filled: true,
             fillColor: const Color.fromARGB(174, 247, 245, 255),

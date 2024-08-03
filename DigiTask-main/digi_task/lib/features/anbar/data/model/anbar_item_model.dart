@@ -4,6 +4,8 @@ class AnbarItemModel {
   String? equipmentName;
   String? brand;
   String? model;
+  String? mac;
+  int? portNumber;
   String? serialNumber;
   int? number;
   String? sizeLength;
@@ -15,6 +17,8 @@ class AnbarItemModel {
       this.equipmentName,
       this.brand,
       this.model,
+      this.mac,
+      this.portNumber,
       this.serialNumber,
       this.number,
       this.sizeLength,
@@ -26,6 +30,8 @@ class AnbarItemModel {
     equipmentName = json['equipment_name'];
     brand = json['brand'];
     model = json['model'];
+    mac = json['mac'];
+    portNumber = json['port_number'];
     serialNumber = json['serial_number'];
     number = json['number'];
     sizeLength = json['size_length'];
@@ -41,6 +47,8 @@ class AnbarItemModel {
     data['equipment_name'] = equipmentName;
     data['brand'] = brand;
     data['model'] = model;
+    data['mac'] = mac;
+    data['port_number'] = portNumber;
     data['serial_number'] = serialNumber;
     data['number'] = number;
     data['size_length'] = sizeLength;

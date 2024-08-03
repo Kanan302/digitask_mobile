@@ -17,14 +17,58 @@ class AnbarView extends StatefulWidget {
 
 class _AnbarViewState extends State<AnbarView> {
   int? selectedWarehouseId = 0;
+  String searchQuery = '';
+  final TextEditingController searchController = TextEditingController();
 
   List<AnbarItemModel> filterAnbarItems(List<AnbarItemModel> items) {
-    if (selectedWarehouseId == 0) {
-      return items;
-    }
-    return items
-        .where((item) => item.warehouse?.id == selectedWarehouseId)
-        .toList();
+    return items.where((item) {
+      final matchesWarehouse =
+          selectedWarehouseId == 0 || item.warehouse?.id == selectedWarehouseId;
+      final matchesSearch = item.equipmentName
+              ?.toLowerCase()
+              .contains(searchQuery.toLowerCase()) ??
+          false;
+      return matchesWarehouse && matchesSearch;
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildHeaderText(String text, {int flex = 1}) {
+    return Expanded(
+      flex: flex,
+      child: Center(
+        child: Text(
+          text,
+          style: context.typography.body1SemiBold.copyWith(
+            color: context.colors.neutralColor20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItemText(String? text,
+      {int flex = 1, TextAlign align = TextAlign.start}) {
+    return Expanded(
+      flex: flex,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 12.0),
+        child: Text(
+          text ?? '',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: align,
+          style: context.typography.body2SemiBold.copyWith(
+            color: context.colors.primaryColor50,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -35,9 +79,15 @@ class _AnbarViewState extends State<AnbarView> {
       child: Column(
         children: [
           CustomSearchBar(
+            controller: searchController,
             fillColor: context.colors.neutralColor100,
             hintText: 'Anbarda axtar',
             isAnbar: true,
+            onChanged: (value) {
+              setState(() {
+                searchQuery = value;
+              });
+            },
           ),
           const SizedBox(height: 8),
           Row(
@@ -69,43 +119,10 @@ class _AnbarViewState extends State<AnbarView> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      'Avadanlıq',
-                      maxLines: 1,
-                      style: context.typography.body1SemiBold
-                          .copyWith(color: context.colors.neutralColor20),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      'Marka',
-                      style: context.typography.body1SemiBold
-                          .copyWith(color: context.colors.neutralColor20),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Center(
-                      child: Text(
-                        'Model',
-                        style: context.typography.body1SemiBold
-                            .copyWith(color: context.colors.neutralColor20),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Center(
-                      child: Text(
-                        'Sayı',
-                        style: context.typography.body1SemiBold
-                            .copyWith(color: context.colors.neutralColor20),
-                      ),
-                    ),
-                  ),
+                  _buildHeaderText('Avadanlıq', flex: 3),
+                  _buildHeaderText('Marka', flex: 2),
+                  _buildHeaderText('Model', flex: 2),
+                  _buildHeaderText('Sayı', flex: 2),
                 ],
               ),
             ),
@@ -129,11 +146,13 @@ class _AnbarViewState extends State<AnbarView> {
                     child: ListView.builder(
                       itemCount: filteredItems.length,
                       itemBuilder: (context, index) {
+                        final item = filteredItems[index];
                         return Column(
                           children: [
                             Divider(
-                                color: context.colors.neutralColor90,
-                                height: 0),
+                              color: context.colors.neutralColor90,
+                              height: 0,
+                            ),
                             const SizedBox(height: 7),
                             Padding(
                               padding: const EdgeInsets.only(
@@ -142,60 +161,12 @@ class _AnbarViewState extends State<AnbarView> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 12.0),
-                                      child: Text(
-                                        "${filteredItems[index].warehouse?.name}",
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: context.typography.body2SemiBold
-                                            .copyWith(
-                                          color: context.colors.primaryColor50,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 12.0),
-                                      child: Text(
-                                        "${filteredItems[index].brand}",
-                                        style: context.typography.body2SemiBold,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Center(
-                                      child: Text(
-                                        "${filteredItems[index].model}",
-                                        maxLines: 1,
-                                        style: context.typography.body2SemiBold
-                                            .copyWith(
-                                          color: context.colors.primaryColor50,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Center(
-                                      child: Text(
-                                        "${filteredItems[index].number}",
-                                        style: context.typography.body2SemiBold
-                                            .copyWith(
-                                          color: context.colors.primaryColor50,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  _buildItemText(item.equipmentName, flex: 3),
+                                  _buildItemText(item.brand, flex: 2),
+                                  _buildItemText(item.model,
+                                      flex: 2, align: TextAlign.center),
+                                  _buildItemText(item.number?.toString(),
+                                      flex: 2, align: TextAlign.center),
                                 ],
                               ),
                             ),

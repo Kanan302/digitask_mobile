@@ -82,7 +82,6 @@ class HomeTabView extends StatelessWidget {
                               DateFormat('MMM d').format(dateTime);
                           String nowFormattedDate =
                               DateFormat('MMM d').format(nowDateTime);
-
                           return UserTaskCard(
                             iconRow: Row(
                               children: [
@@ -156,7 +155,9 @@ class HomeTabView extends StatelessWidget {
                     if (context.watch<MainNotifier>().isAdmin) ...[
                       ComponentTitle(
                         title: 'Texniklərin performansı',
-                        onPressed: () {},
+                        onPressed: () {
+                          tabController.index = 1;
+                        },
                       ),
                       const SizedBox(
                         height: 16,
