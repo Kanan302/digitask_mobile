@@ -4,6 +4,8 @@ import 'package:digi_task/data/services/local/secure_service.dart';
 import 'package:digi_task/data/services/network/auth_service.dart';
 import 'package:digi_task/features/isciler/models/user_model.dart';
 import 'package:digi_task/features/isciler/widgets/delete_dialog.dart';
+import 'package:digi_task/features/isciler/widgets/edit_dialog.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -300,9 +302,14 @@ class _IscilerViewState extends State<IscilerView> {
                           title: Text('${user.firstName} ${user.lastName}'),
                           subtitle: Text(user.email),
                           trailing: PopupMenuButton<String>(
-                            onSelected: (String value) {
+                            onSelected: (String value) async {
                               if (value == 'edit') {
-                                // Handle edit action here
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return EditUserDialog(user: user);
+                                  },
+                                );
                               } else if (value == 'delete') {
                                 showDialog(
                                   context: context,
