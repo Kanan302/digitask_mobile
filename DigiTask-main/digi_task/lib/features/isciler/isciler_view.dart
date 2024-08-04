@@ -3,6 +3,7 @@ import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:digi_task/data/services/local/secure_service.dart';
 import 'package:digi_task/data/services/network/auth_service.dart';
 import 'package:digi_task/features/isciler/models/user_model.dart';
+import 'package:digi_task/features/isciler/widgets/delete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -58,6 +59,32 @@ class _IscilerViewState extends State<IscilerView> {
       }
     } catch (e) {
       throw Exception('Failed to load users: $e');
+    }
+  }
+
+  Future<void> _deleteUser(int userId) async {
+    try {
+      final token = await secureService.accessToken;
+      if (token == null) {
+        throw Exception('No access token found');
+      }
+
+      final response = await Dio().delete(
+        'http://135.181.42.192/accounts/delete_user/$userId/',
+        options: Options(
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+      );
+
+      if (response.statusCode == 204) {
+        setState(() {
+          _usersFuture = _fetchUsers();
+        });
+      } else {
+        throw Exception('Failed to delete user');
+      }
+    } catch (e) {
+      print('Error deleting user: $e');
     }
   }
 
@@ -272,9 +299,47 @@ class _IscilerViewState extends State<IscilerView> {
                         child: ListTile(
                           title: Text('${user.firstName} ${user.lastName}'),
                           subtitle: Text(user.email),
-                          trailing: IconButton(
+                          trailing: PopupMenuButton<String>(
+                            onSelected: (String value) {
+                              if (value == 'edit') {
+                                // Handle edit action here
+                              } else if (value == 'delete') {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return DeleteConfirmationDialog(
+                                      onConfirm: () {
+                                        Navigator.of(context).pop();
+                                        _deleteUser(user.id);
+                                      },
+                                    );
+                                  },
+                                );
+                              }
+                            },
                             icon: const Icon(Icons.more_vert),
-                            onPressed: () {},
+                            itemBuilder: (BuildContext context) => [
+                              const PopupMenuItem<String>(
+                                value: 'edit',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.edit_outlined),
+                                    SizedBox(width: 5),
+                                    Text('Redaktə et'),
+                                  ],
+                                ),
+                              ),
+                              const PopupMenuItem<String>(
+                                value: 'delete',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete_outlined),
+                                    SizedBox(width: 5),
+                                    Text('Sil'),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
