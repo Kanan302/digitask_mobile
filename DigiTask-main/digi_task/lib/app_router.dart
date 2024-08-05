@@ -172,6 +172,7 @@ final class AppRouter {
               name: AppRoutes.events.name,
               builder: (context, state) => const EventsPage(),
             ),
+
           ],
         ),
       ],

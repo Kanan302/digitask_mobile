@@ -3,6 +3,7 @@ import 'package:digi_task/core/constants/path/image_paths.dart';
 import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:digi_task/core/utility/extension/image_path_ext.dart';
+import 'package:digi_task/features/events/widget/events_dialog.dart';
 import 'package:digi_task/notifier/home/main/main_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -58,7 +59,13 @@ class EventsPage extends StatelessWidget {
                             DateFormat('MMM d, HH:mm').format(dateTime);
 
                         return GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return EventsDialog(meeting: meeting);
+                                });
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -166,3 +173,47 @@ class EventsPage extends StatelessWidget {
     );
   }
 }
+
+// void showEventDialog(BuildContext context, Meetings meeting) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+//         content: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: <Widget>[
+//             ClipRRect(
+//               borderRadius: BorderRadius.circular(16),
+//               child: Image.asset(
+//                 ImagePath.cardinfo.toPathPng,
+//                 height: 200,
+//                 width: 130,
+//                 fit: BoxFit.contain,
+//               ),
+//             ),
+//             Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: Text(meeting.title ?? "No Title",
+//                   style: const TextStyle(color: Colors.black)),
+//             ),
+//             Padding(
+//               padding: const EdgeInsets.symmetric(vertical: 4.0),
+//               child: Text(
+//                   DateFormat('EEEE, MMM d, yyyy')
+//                       .format(DateTime.parse(meeting.date!)),
+//                   style: const TextStyle(color: Colors.black)),
+//             ),
+//             Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: Text(
+//                   meeting.meetingDescription ?? "No description provided",
+//                   textAlign: TextAlign.center,
+//                   style: const TextStyle(color: Colors.black)),
+//             ),
+//           ],
+//         ),
+//       );
+//     },
+//   );
+// }
