@@ -23,7 +23,7 @@ class _AnbarViewState extends State<AnbarView> {
   List<AnbarItemModel> filterAnbarItems(List<AnbarItemModel> items) {
     return items.where((item) {
       final matchesWarehouse =
-          selectedWarehouseId == 0 || item.warehouse?.id == selectedWarehouseId;
+          selectedWarehouseId == 0 || item.warehouseId == selectedWarehouseId;
       final matchesSearch = item.equipmentName
               ?.toLowerCase()
               .contains(searchQuery.toLowerCase()) ??
