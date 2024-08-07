@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 
 import '../local/secure_service.dart';
 
-import 'package:jwt_decoder/jwt_decoder.dart';
+// import 'package:jwt_decoder/jwt_decoder.dart';
 
 class JwtInterceptor extends Interceptor {
   final _secureStorage = getIt.get<SecureService>();
@@ -17,14 +17,14 @@ class JwtInterceptor extends Interceptor {
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
 
-      final decodedToken = JwtDecoder.decode(token);
-      final warehouseRegion = decodedToken['warehouse']?['region'];
-      final createdBy = decodedToken['created_by'];
-      final date = decodedToken['date'];
+      // final decodedToken = JwtDecoder.decode(token);
+      // final warehouseRegion = decodedToken['warehouse']?['region'];
+      // final createdBy = decodedToken['created_by'];
+      // final date = decodedToken['date'];
 
-      print('Warehouse Region: $warehouseRegion');
-      print('Created By: $createdBy');
-      print('Date: $date');
+      // print('Warehouse Region: $warehouseRegion');
+      // print('Created By: $createdBy');
+      // print('Date: $date');
     }
     return handler.next(options);
   }

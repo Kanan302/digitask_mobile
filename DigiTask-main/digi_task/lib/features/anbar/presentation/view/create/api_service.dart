@@ -29,7 +29,14 @@ class ApiService {
         print('Failed to import item: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error importing item: $e');
+      if (e is DioException) {
+        print('Dio error: ${e.message}');
+        if (e.response != null) {
+          print('Error response: ${e.response?.data}');
+        }
+      } else {
+        print('Unknown error: $e');
+      }
     }
   }
 }
