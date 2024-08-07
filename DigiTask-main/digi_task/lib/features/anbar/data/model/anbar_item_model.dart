@@ -11,32 +11,34 @@ class AnbarItemModel {
   String? sizeLength;
   bool? deleted;
 
-  AnbarItemModel(
-      {this.id,
-      this.warehouse,
-      this.equipmentName,
-      this.brand,
-      this.model,
-      this.mac,
-      this.portNumber,
-      this.serialNumber,
-      this.number,
-      this.sizeLength,
-      this.deleted});
+  AnbarItemModel({
+    this.id,
+    this.warehouse,
+    this.equipmentName,
+    this.brand,
+    this.model,
+    this.mac,
+    this.portNumber,
+    this.serialNumber,
+    this.number,
+    this.sizeLength,
+    this.deleted = false,
+  });
 
-  AnbarItemModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    warehouse = json['warehouse'] != null ? Warehouse.fromJson(json['warehouse']) : null;
-    equipmentName = json['equipment_name'];
-    brand = json['brand'];
-    model = json['model'];
-    mac = json['mac'];
-    portNumber = json['port_number'];
-    serialNumber = json['serial_number'];
-    number = json['number'];
-    sizeLength = json['size_length'];
-    deleted = json['deleted'];
-  }
+  AnbarItemModel.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        warehouse = json['warehouse'] != null
+            ? Warehouse.fromJson(json['warehouse'])
+            : null,
+        equipmentName = json['equipment_name'],
+        brand = json['brand'],
+        model = json['model'],
+        mac = json['mac'],
+        portNumber = json['port_number'],
+        serialNumber = json['serial_number'],
+        number = json['number'],
+        sizeLength = json['size_length'],
+        deleted = json['deleted'] ?? false;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -64,11 +66,10 @@ class Warehouse {
 
   Warehouse({this.id, this.name, this.region});
 
-  Warehouse.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    region = json['region'];
-  }
+  Warehouse.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        region = json['region'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

@@ -45,7 +45,7 @@ class SecureService implements ISecureService {
       Error.throwWithStackTrace(e, s);
     }
   }
-  
+
   @override
   Future<String?> get refreshToken async {
     try {
@@ -55,17 +55,14 @@ class SecureService implements ISecureService {
       Error.throwWithStackTrace(e, s);
     }
   }
-  
+
   @override
   Future<void> clearToken() async {
     try {
       await secureStorage.delete(key: AppKeys.accessToken);
       await secureStorage.delete(key: AppKeys.refreshToken);
-
     } catch (e, s) {
       Error.throwWithStackTrace(e, s);
     }
   }
-
- 
 }

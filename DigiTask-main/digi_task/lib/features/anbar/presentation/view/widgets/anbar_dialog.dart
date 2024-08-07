@@ -1,7 +1,8 @@
+import 'package:digi_task/features/anbar/presentation/view/create/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:digi_task/features/anbar/data/model/anbar_item_model.dart';
-import 'package:digi_task/features/anbar/presentation/view/create/create_idxal.dart';
+
 
 class AnbarDialog extends StatefulWidget {
   const AnbarDialog({super.key});
@@ -22,6 +23,7 @@ class _AnbarDialogState extends State<AnbarDialog> {
 
   final ApiService apiService = ApiService();
   String? selectedAnbar;
+  int? warehouseId;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -51,16 +53,14 @@ class _AnbarDialogState extends State<AnbarDialog> {
               borderRadius: BorderRadius.circular(24),
             ),
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 26.0, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 26.0, horizontal: 16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Center(
                     child: Text(
                       'İdxal',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const Divider(
@@ -82,6 +82,7 @@ class _AnbarDialogState extends State<AnbarDialog> {
                     onChanged: (value) {
                       setState(() {
                         selectedAnbar = value;
+                        warehouseId = value == 'Anbar 1' ? 1 : 2;
                       });
                     },
                     validator: (value) {
@@ -256,13 +257,12 @@ class _AnbarDialogState extends State<AnbarDialog> {
                           serialNumber: serialNumberController.text,
                           number: int.tryParse(numberController.text) ?? 0,
                           sizeLength: sizeLengthController.text,
-                          warehouse: Warehouse(name: selectedAnbar!),
+                          warehouse: Warehouse(id: warehouseId, name: selectedAnbar!),
                         );
                         try {
                           await apiService.postAnbarItem(item);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('İdxal uğurla tamamlandı')),
+                            const SnackBar(content: Text('İdxal uğurla tamamlandı')),
                           );
 
                           equipmentNameController.clear();
