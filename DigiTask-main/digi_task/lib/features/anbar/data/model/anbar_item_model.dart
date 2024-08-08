@@ -1,6 +1,6 @@
 class AnbarItemModel {
-  // int? id;
-  int? warehouseId;
+  int? id;
+  Warehouse? warehouse;
   String? equipmentName;
   String? brand;
   String? model;
@@ -12,8 +12,8 @@ class AnbarItemModel {
   bool? deleted;
 
   AnbarItemModel({
-    // this.id,
-    this.warehouseId,
+    this.id,
+    this.warehouse,
     this.equipmentName,
     this.brand,
     this.model,
@@ -26,10 +26,10 @@ class AnbarItemModel {
   });
 
   AnbarItemModel.fromJson(Map<String, dynamic> json)
-      :
-        // id = json['id'],
-        warehouseId =
-            json['warehouse'] != null ? json['warehouse']['id'] : null,
+      : id = json['id'],
+        warehouse = json['warehouse'] != null
+            ? Warehouse.fromJson(json['warehouse'])
+            : null,
         equipmentName = json['equipment_name'],
         brand = json['brand'],
         model = json['model'],
@@ -42,8 +42,10 @@ class AnbarItemModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    // data['id'] = id;
-    data['warehouse'] = warehouseId != null ? {'id': warehouseId} : {};
+    data['id'] = id;
+    if (warehouse != null) {
+      data['warehouse'] = warehouse!.toJson();
+    }
     data['equipment_name'] = equipmentName;
     data['brand'] = brand;
     data['model'] = model;
@@ -53,6 +55,27 @@ class AnbarItemModel {
     data['number'] = number;
     data['size_length'] = sizeLength;
     data['deleted'] = deleted;
+    return data;
+  }
+}
+
+class Warehouse {
+  int? id;
+  String? name;
+  String? region;
+
+  Warehouse({this.id, this.name, this.region});
+
+  Warehouse.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        region = json['region'];
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['region'] = region;
     return data;
   }
 }
