@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:digi_task/features/anbar/data/model/anbar_item_model.dart';
 
-
 class AnbarDialog extends StatefulWidget {
   const AnbarDialog({super.key});
 
@@ -53,14 +52,16 @@ class _AnbarDialogState extends State<AnbarDialog> {
               borderRadius: BorderRadius.circular(24),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 26.0, horizontal: 16),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 26.0, horizontal: 16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Center(
                     child: Text(
                       'İdxal',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const Divider(
@@ -73,23 +74,20 @@ class _AnbarDialogState extends State<AnbarDialog> {
                       labelText: 'Anbar',
                       border: OutlineInputBorder(),
                     ),
-                    items: <String>['Anbar 1', 'Anbar 2'].map((String value) {
+                    items: <Map<String, String>>[
+                      {'id': '1', 'name': 'Anbar 1'},
+                      {'id': '2', 'name': 'Anbar 2'},
+                    ].map((Map<String, String> value) {
                       return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
+                        value: value['id'],
+                        child: Text(value['name']!),
                       );
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
                         selectedAnbar = value;
-                        warehouseId = value == 'Anbar 1' ? 1 : 2;
+                        warehouseId = int.tryParse(value!);
                       });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Bir anbar seçməlisiniz';
-                      }
-                      return null;
                     },
                   ),
                   const SizedBox(height: 16),
@@ -230,6 +228,10 @@ class _AnbarDialogState extends State<AnbarDialog> {
                       Expanded(
                         child: TextFormField(
                           controller: sizeLengthController,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
                           decoration: const InputDecoration(
                             labelText: 'Ölçüsü',
                             border: OutlineInputBorder(),
@@ -253,18 +255,22 @@ class _AnbarDialogState extends State<AnbarDialog> {
                           brand: brandController.text,
                           model: modelController.text,
                           mac: macController.text,
-                          portNumber: int.tryParse(portNumberController.text),
+                          portNumber:
+                              int.tryParse(portNumberController.text) ?? 0,
                           serialNumber: serialNumberController.text,
                           number: int.tryParse(numberController.text) ?? 0,
                           sizeLength: sizeLengthController.text,
-                          // warehouse: Warehouse(id: warehouseId, name: selectedAnbar!),
+                          warehouse: warehouseId,
                         );
+
                         try {
                           await apiService.postAnbarItem(item);
+                          Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('İdxal uğurla tamamlandı')),
+                            const SnackBar(
+                              content: Text('İdxal uğurla tamamlandı'),
+                            ),
                           );
-
                           equipmentNameController.clear();
                           brandController.clear();
                           modelController.clear();
@@ -274,7 +280,12 @@ class _AnbarDialogState extends State<AnbarDialog> {
                           numberController.clear();
                           sizeLengthController.clear();
                         } catch (e) {
-                          print('Error: $e');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              duration: const Duration(seconds: 3),
+                              content: Text(e.toString()),
+                            ),
+                          );
                         }
                       }
                     },

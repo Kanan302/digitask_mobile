@@ -27,6 +27,11 @@ class ApiService {
         print('Item imported successfully');
       } else {
         print('Failed to import item: ${response.statusCode}');
+
+        if (response.data is Map<String, dynamic> &&
+            response.data.containsKey('serial_number')) {
+          throw Exception(response.data['serial_number'][0]);
+        }
       }
     } catch (e) {
       if (e is DioException) {
@@ -34,8 +39,11 @@ class ApiService {
         if (e.response != null) {
           print('Error response: ${e.response?.data}');
         }
+
+        throw Exception(e.response?.data ?? 'An unknown error occurred');
       } else {
         print('Unknown error: $e');
+        throw Exception('An unknown error occurred');
       }
     }
   }
