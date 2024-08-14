@@ -52,7 +52,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
 
   @override
   Widget build(BuildContext context) {
-    final taskType = GoRouterState.of(context).extra as String;
+    final taskType = (GoRouterState.of(context).extra as String?) ?? '';
+
     return Scaffold(
       backgroundColor: context.colors.neutralColor100,
       appBar: AppBar(
@@ -62,11 +63,13 @@ class _CreateTaskViewState extends State<CreateTaskView> {
         leading: IconButton(
             onPressed: () {
               context.pop();
-              context.pop();
             },
             icon: SvgPicture.asset(IconPath.arrowleft.toPathSvg)),
         title: Text('Yeni Tapşırıq', style: context.typography.subtitle2Medium),
-        actions: [IconButton(onPressed: () {}, icon: SvgPicture.asset(IconPath.menu.toPathSvg))],
+        actions: [
+          IconButton(
+              onPressed: () {}, icon: SvgPicture.asset(IconPath.menu.toPathSvg))
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -129,12 +132,13 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                         showDatePicker(
                           context: context,
                           firstDate: DateTime(2020, 9, 7, 17, 30),
-                          lastDate: DateTime(2024, 9, 7, 17, 30),
+                          lastDate: DateTime(2040, 9, 7, 17, 30),
                         ).then((selectedDate) {
                           if (selectedDate != null) {
                             setState(() {
                               date = selectedDate;
-                              formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+                              formattedDate =
+                                  DateFormat('yyyy-MM-dd').format(selectedDate);
                             });
                           }
                         });
@@ -154,14 +158,20 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                       hintText: startTimeFormatted,
                       onTap: () {
                         showTimePicker(
-                                context: context,
-                                initialEntryMode: TimePickerEntryMode.input,
-                                initialTime: TimeOfDay.now())
-                            .then(
+                            context: context,
+                            initialEntryMode: TimePickerEntryMode.input,
+                            initialTime: TimeOfDay.now(),
+                            builder: (context, child) {
+                              return MediaQuery(
+                                  data: MediaQuery.of(context)
+                                      .copyWith(alwaysUse24HourFormat: true),
+                                  child: child!);
+                            }).then(
                           (selectedTime) {
                             if (selectedTime != null) {
                               setState(() {
-                                startTimeFormatted = selectedTime.format(context);
+                                startTimeFormatted =
+                                    selectedTime.format(context);
                               });
                             }
                           },
@@ -182,10 +192,15 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                       hintText: endTimeFormatted,
                       onTap: () {
                         showTimePicker(
-                                context: context,
-                                initialEntryMode: TimePickerEntryMode.input,
-                                initialTime: TimeOfDay.now())
-                            .then((selectedTime) {
+                            context: context,
+                            initialEntryMode: TimePickerEntryMode.input,
+                            initialTime: TimeOfDay.now(),
+                            builder: (context, child) {
+                              return MediaQuery(
+                                  data: MediaQuery.of(context)
+                                      .copyWith(alwaysUse24HourFormat: true),
+                                  child: child!);
+                            }).then((selectedTime) {
                           if (selectedTime != null) {
                             setState(() {
                               endTimeFormatted = selectedTime.format(context);
@@ -205,7 +220,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 children: [
                   Text(
                     'Servis',
-                    style: context.typography.body2SemiBold.copyWith(color: context.colors.neutralColor60),
+                    style: context.typography.body2SemiBold
+                        .copyWith(color: context.colors.neutralColor60),
                   ),
                   const SizedBox(
                     height: 8,
@@ -265,7 +281,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 children: [
                   Text(
                     'Texniki Qrup',
-                    style: context.typography.body2SemiBold.copyWith(color: context.colors.neutralColor60),
+                    style: context.typography.body2SemiBold
+                        .copyWith(color: context.colors.neutralColor60),
                   ),
                 ],
               ),
@@ -274,11 +291,14 @@ class _CreateTaskViewState extends State<CreateTaskView> {
               ),
               MultiSelectDropDown(
                 selectedItemBuilder: (p0, p1) => Container(
-                    decoration:
-                        BoxDecoration(color: context.colors.primaryColor99, borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(
+                        color: context.colors.primaryColor99,
+                        borderRadius: BorderRadius.circular(8)),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                      child: Text(p1.label, style: context.typography.body2SemiBold),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 4),
+                      child: Text(p1.label,
+                          style: context.typography.body2SemiBold),
                     )),
                 animateSuffixIcon: false,
                 dropdownBorderRadius: 8,
@@ -286,7 +306,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 borderRadius: 8,
                 borderColor: Colors.white,
                 onOptionSelected: (options) {
-                  selectGroupList = options.map((e) => int.parse(e.value)).toList();
+                  selectGroupList =
+                      options.map((e) => int.parse(e.value)).toList();
                 },
                 dropdownBackgroundColor: context.colors.backgroundColor,
                 fieldBackgroundColor: context.colors.backgroundColor,
@@ -301,7 +322,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 selectionType: SelectionType.multi,
                 chipConfig: const ChipConfig(wrapType: WrapType.wrap),
                 dropdownHeight: 100,
-                optionTextStyle: context.typography.body2SemiBold.copyWith(color: context.colors.neutralColor60),
+                optionTextStyle: context.typography.body2SemiBold
+                    .copyWith(color: context.colors.neutralColor60),
                 selectedOptionIcon: const Icon(Icons.check),
               ),
               const SizedBox(
@@ -323,7 +345,9 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 builder: (_, notifier, child) {
                   return ActionButton(
                     title: 'Əlavə et',
-                    isLoading: notifier.createState is TaskCreateProgress ? true : false,
+                    isLoading: notifier.createState is TaskCreateProgress
+                        ? true
+                        : false,
                     onPressed: () async {
                       if (nameController.text.trim().isNotEmpty &&
                           contactController.text.trim().isNotEmpty &&
@@ -334,7 +358,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                         final model = CreateTaskModel(
                             fullName: nameController.text.trim(),
                             contactNumber: contactController.text.trim(),
-                            registrationNumber: registrationController.text.trim(),
+                            registrationNumber:
+                                registrationController.text.trim(),
                             isInternet: isInternet,
                             isTv: isTv,
                             isVoice: isVoice,
@@ -347,14 +372,18 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                             taskType: taskType,
                             status: "waiting");
                         await notifier.createTask(model);
-                        if (notifier.createState is TaskCreateSuccess && mounted) {
+                        if (notifier.createState is TaskCreateSuccess &&
+                            mounted) {
                           context.pop();
                           context.pop();
                         } else if (notifier.createState is TaskCreateFailure) {
-                          openFlushbar(context, title: 'Uğursuz əməliyyat', color: context.colors.errorColor80);
+                          openFlushbar(context,
+                              title: 'Uğursuz əməliyyat',
+                              color: context.colors.errorColor80);
                         }
                       } else {
-                        openFlushbar(context, title: 'Boşluqları doldurun', color: Colors.white);
+                        openFlushbar(context,
+                            title: 'Boşluqları doldurun', color: Colors.white);
                       }
                     },
                   );

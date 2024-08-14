@@ -21,7 +21,7 @@ class _IxracDialogState extends State<IxracDialog> {
   );
 
   List<Map<String, dynamic>> _userItems = [];
-  String? _selectedUserId;
+  int? _selectedUserId;
   final TextEditingController _companyController = TextEditingController();
   final TextEditingController _authorizedController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
@@ -42,7 +42,7 @@ class _IxracDialogState extends State<IxracDialog> {
           _userItems = users.map<Map<String, dynamic>>((user) {
             String fullName = '${user['first_name']} ${user['last_name']}';
             return {
-              'id': user['id'].toString(),
+              'id': user['id'],
               'name': fullName,
               'user_type': user['user_type'],
               'group': user['group'] != null ? user['group']['group'] : null,
@@ -64,7 +64,6 @@ class _IxracDialogState extends State<IxracDialog> {
   Future<void> _submitForm() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    // Ensure selected user ID is valid before submitting the form
     if (_selectedUserId != null) {
       final isValidUser =
           _userItems.any((user) => user['id'] == _selectedUserId);
@@ -81,8 +80,7 @@ class _IxracDialogState extends State<IxracDialog> {
       "company": _companyController.text,
       "authorized_person": _authorizedController.text,
       "number": int.tryParse(_numberController.text) ?? 0,
-      "texnik_user":
-          _selectedUserId != null ? int.parse(_selectedUserId!) : null,
+      "texnik_user": _selectedUserId,
     };
 
     try {
@@ -104,10 +102,14 @@ class _IxracDialogState extends State<IxracDialog> {
           const SnackBar(content: Text('Məlumatlar uğurla yeniləndi')),
         );
       } else {
-        // Handle specific error messages
         if (response.data.toString().contains('Xətalı pk')) {
+          final invalidUserId = _selectedUserId ?? 'unknown';
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Xəta: Seçilmiş işçi mövcud deyil.')),
+            SnackBar(
+              content: Text(
+                'Xəta: Seçilmiş işçi mövcud deyil. ID: $invalidUserId',
+              ),
+            ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -148,30 +150,28 @@ class _IxracDialogState extends State<IxracDialog> {
           key: _formKey,
           child: ListBody(
             children: <Widget>[
-              DropdownButtonFormField<String>(
+              DropdownButtonFormField<int>(
                 decoration: const InputDecoration(
                   labelText: 'İşçi seçin',
                   border: OutlineInputBorder(),
                 ),
                 value: _selectedUserId,
-                items: _userItems.map<DropdownMenuItem<String>>((user) {
-                  return DropdownMenuItem<String>(
-                    value: user['id'], // Keep the ID as the value
+                items: _userItems.map<DropdownMenuItem<int>>((user) {
+                  return DropdownMenuItem<int>(
+                    value: user['id'],
                     child: Text('${user['name']} (${user['user_type']})'),
                   );
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    // Find the selected user by ID
                     final selectedUser =
                         _userItems.firstWhere((user) => user['id'] == value);
 
-                    // Set the selected user's ID
                     _selectedUserId = selectedUser['id'];
                   });
                 },
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null) {
                     return 'Bu sahə boş ola bilməz';
                   }
                   return null;
