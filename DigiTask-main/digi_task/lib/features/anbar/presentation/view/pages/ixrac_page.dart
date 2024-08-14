@@ -86,10 +86,9 @@ class _IxracPageState extends State<IxracPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildHeaderText('Avadanlıq', flex: 3),
-                        const SizedBox(width: 10),
-                        _buildHeaderText('Səlahiyyətli şəxs', flex: 4),
-                        _buildHeaderText('Tarix', flex: 4),
+                        _buildHeaderText('Avadanlıq', flex: 4),
+                        _buildHeaderText('Səlahiyyətli şəxs', flex: 5),
+                        _buildHeaderText('Tarix', flex: 3),
                         _buildHeaderText('Sayı', flex: 2),
                       ],
                     ),
@@ -116,11 +115,10 @@ class _IxracPageState extends State<IxracPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               _buildItemText(item['item_equipment_name'] ?? '',
-                                  flex: 3),
-                              const SizedBox(width: 10),
-                              _buildItemText(item['authorized_person'] ?? '',
                                   flex: 4),
-                              _buildItemText(formattedDate, flex: 4),
+                              _buildItemText(item['authorized_person'] ?? '',
+                                  flex: 5),
+                              _buildItemText(formattedDate, flex: 3),
                               _buildItemText(item['number'].toString(),
                                   flex: 2),
                             ],

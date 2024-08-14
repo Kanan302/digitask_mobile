@@ -159,7 +159,9 @@ class _IxracDialogState extends State<IxracDialog> {
                 items: _userItems.map<DropdownMenuItem<int>>((user) {
                   return DropdownMenuItem<int>(
                     value: user['id'],
-                    child: Text('${user['name']} (${user['user_type']})'),
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: Text('${user['name']} ')),
                   );
                 }).toList(),
                 onChanged: (value) {
