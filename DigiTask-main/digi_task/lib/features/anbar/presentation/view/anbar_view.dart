@@ -77,7 +77,7 @@ class _AnbarViewState extends State<AnbarView> {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-          const EdgeInsets.only(left: 10.0, right: 10, top: 24, bottom: 20),
+          const EdgeInsets.only(left: 16.0, right: 16, top: 24, bottom: 20),
       child: Column(
         children: [
           CustomSearchBar(
@@ -117,7 +117,7 @@ class _AnbarViewState extends State<AnbarView> {
             ),
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

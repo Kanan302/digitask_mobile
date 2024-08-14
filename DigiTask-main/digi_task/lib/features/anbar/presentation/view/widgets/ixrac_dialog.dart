@@ -20,8 +20,8 @@ class _IxracDialogState extends State<IxracDialog> {
     secureStorage: const FlutterSecureStorage(),
   );
 
-  List<DropdownMenuItem<String>> _userItems = [];
-  String? _selectedUser;
+  List<Map<String, dynamic>> _userItems = [];
+  String? _selectedUserId;
   final TextEditingController _companyController = TextEditingController();
   final TextEditingController _authorizedController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
@@ -39,12 +39,14 @@ class _IxracDialogState extends State<IxracDialog> {
       if (response.statusCode == 200) {
         List<dynamic> users = response.data;
         setState(() {
-          _userItems = users.map<DropdownMenuItem<String>>((user) {
+          _userItems = users.map<Map<String, dynamic>>((user) {
             String fullName = '${user['first_name']} ${user['last_name']}';
-            return DropdownMenuItem<String>(
-              value: fullName,
-              child: Text(fullName),
-            );
+            return {
+              'id': user['id'].toString(),
+              'name': fullName,
+              'user_type': user['user_type'],
+              'group': user['group'] != null ? user['group']['group'] : null,
+            };
           }).toList();
         });
       } else {
@@ -52,18 +54,35 @@ class _IxracDialogState extends State<IxracDialog> {
       }
     } catch (e) {
       print('Error fetching users: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('İstifadəçi siyahısını yükləmək mümkün olmadı.')),
+      );
     }
   }
 
   Future<void> _submitForm() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
+    // Ensure selected user ID is valid before submitting the form
+    if (_selectedUserId != null) {
+      final isValidUser =
+          _userItems.any((user) => user['id'] == _selectedUserId);
+      if (!isValidUser) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Xəta: Seçilmiş işçi mövcud deyil.')),
+        );
+        return;
+      }
+    }
+
     final postData = {
-      'item_id': widget.itemId.toString(),
+      'item_id': widget.itemId,
       "company": _companyController.text,
       "authorized_person": _authorizedController.text,
       "number": int.tryParse(_numberController.text) ?? 0,
-      "texnik_user": _selectedUser,
+      "texnik_user":
+          _selectedUserId != null ? int.parse(_selectedUserId!) : null,
     };
 
     try {
@@ -85,12 +104,38 @@ class _IxracDialogState extends State<IxracDialog> {
           const SnackBar(content: Text('Məlumatlar uğurla yeniləndi')),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Datanı ixrac etmək alınmadı')),
-        );
+        // Handle specific error messages
+        if (response.data.toString().contains('Xətalı pk')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Xəta: Seçilmiş işçi mövcud deyil.')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Xəta: ${response.data}')),
+          );
+        }
       }
     } catch (e) {
-      print('Error submitting export: $e');
+      if (e is DioException) {
+        if (e.response != null) {
+          print('Post data: $postData');
+          print('Error submitting export: ${e.response?.statusCode}');
+          print('Error data: ${e.response?.data}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Xəta: ${e.response?.data}')),
+          );
+        } else {
+          print('Error submitting export: ${e.message}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Xəta: ${e.message}')),
+          );
+        }
+      } else {
+        print('Error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Xəta: $e')),
+        );
+      }
     }
   }
 
@@ -108,11 +153,21 @@ class _IxracDialogState extends State<IxracDialog> {
                   labelText: 'İşçi seçin',
                   border: OutlineInputBorder(),
                 ),
-                value: _selectedUser,
-                items: _userItems,
+                value: _selectedUserId,
+                items: _userItems.map<DropdownMenuItem<String>>((user) {
+                  return DropdownMenuItem<String>(
+                    value: user['id'], // Keep the ID as the value
+                    child: Text('${user['name']} (${user['user_type']})'),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    _selectedUser = value;
+                    // Find the selected user by ID
+                    final selectedUser =
+                        _userItems.firstWhere((user) => user['id'] == value);
+
+                    // Set the selected user's ID
+                    _selectedUserId = selectedUser['id'];
                   });
                 },
                 validator: (value) {
