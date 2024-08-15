@@ -1,4 +1,5 @@
 import 'package:digi_task/app_router.dart';
+import 'package:digi_task/location/location_service.dart';
 import 'package:digi_task/notifier/auth/auth_notifier.dart';
 import 'package:digi_task/notifier/home/main/main_notifier.dart';
 import 'package:digi_task/notifier/theme/theme_scope.dart';
@@ -13,6 +14,9 @@ import 'injection.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
+
+  final locationService = LocationService();
+
   runApp(
     MultiProvider(
       providers: [
@@ -21,6 +25,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => GetIt.instance<MainNotifier>(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => locationService,
         ),
       ],
       child: const ThemeScopeWidget(
@@ -57,5 +64,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-

@@ -9,6 +9,7 @@ import 'package:digi_task/features/profile/presentation/notifier/profile_notifie
 import 'package:digi_task/features/profile/presentation/view/profile_edit_view.dart';
 import 'package:digi_task/features/tasks/presentation/notifier/task_notifier.dart';
 import 'package:digi_task/features/tasks/presentation/view/create_task_view.dart';
+import 'package:digi_task/location/location_service.dart';
 import 'package:digi_task/presentation/pages/chat/chat_page.dart';
 import 'package:digi_task/presentation/pages/login/login_page.dart';
 import 'package:digi_task/presentation/pages/notification/notification_page.dart';
@@ -24,6 +25,7 @@ import 'notifier/auth/login/login_notifier.dart';
 import 'notifier/home/main/main_notifier.dart';
 import 'presentation/pages/home/home_page.dart';
 import 'presentation/pages/onboarding/onboarding_page.dart';
+
 
 final _appRouterKey = GlobalKey<NavigatorState>();
 
@@ -102,11 +104,9 @@ final class AppRouter {
                 create: (context) => GetIt.instance<ProfileNotifier>()
                   ..getUserInformation(),
               ),
-              // Uncomment if needed
-              // ChangeNotifierProvider(
-              //   create: (context) => GetIt.instance<AnbarNotifier>()
-              //     ..getAnbarItemList(),
-              // ),
+              ChangeNotifierProvider(
+                create: (context) => LocationService()..startGettingLocation(),
+              ),
             ],
             child: const HomePage(),
           ),
@@ -172,7 +172,6 @@ final class AppRouter {
               name: AppRoutes.events.name,
               builder: (context, state) => const EventsPage(),
             ),
-
           ],
         ),
       ],
