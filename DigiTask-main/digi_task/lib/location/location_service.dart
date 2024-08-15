@@ -7,11 +7,14 @@ class LocationService with ChangeNotifier {
   String? _currentAddress;
 
   // Yer məlumatlarını almağa başlamaq üçün metod
-  void startGettingLocation() async {
+  Future<void> startGettingLocation() async {
     _currentPosition = await LocationHandler.getCurrentPosition();
+    print('----------------------------0');
     if (_currentPosition != null) {
-      _currentAddress = await LocationHandler.getAddressFromLatLng(_currentPosition!);
-      notifyListeners();  // UI-ı yeniləmək üçün istifadə edilir
+      print('----------------------------1');
+      _currentAddress =
+          await LocationHandler.getAddressFromLatLng(_currentPosition!);
+      notifyListeners();
     }
   }
 
@@ -26,19 +29,21 @@ abstract class LocationHandler {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return false;  // Yer xidmətləri aktiv deyil
+      return false; // Yer xidmətləri aktiv deyil
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+      print('----------------------------3');
       if (permission == LocationPermission.denied) {
-        return false;  // İcazə inkar edildi
+        return false; // İcazə inkar edildi
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return false;  // İcazə daim inkar edilib
+      print('----------------------------4');
+      return false; // İcazə daim inkar edilib
     }
 
     return true;
