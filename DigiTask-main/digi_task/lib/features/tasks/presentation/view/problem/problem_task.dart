@@ -1,8 +1,13 @@
-import 'package:digi_task/features/tasks/presentation/view/problem/widgets/service_detail.dart';
-import 'package:digi_task/features/tasks/presentation/view/problem/widgets/service_dialog.dart';
+import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_task/features/tasks/data/model/task_model.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/task_service.dart';
+import 'package:digi_task/features/tasks/presentation/view/problem/widgets/service_detail.dart';
+import 'package:digi_task/features/tasks/presentation/view/problem/widgets/service_dialog.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:digi_task/notifier/home/main/main_notifier.dart';
 
 class ProblemTask extends StatefulWidget {
   final String serviceType;
@@ -22,6 +27,7 @@ class ProblemTask extends StatefulWidget {
 
 class _ProblemTaskState extends State<ProblemTask> {
   late Future<TaskModel> task;
+
   final List<Map<String, dynamic>> mockData = [
     {'icon': Icons.person_2_outlined, 'title': 'Ad və soyad:'},
     {'icon': Icons.phone, 'title': 'Qeydiyyat nömrəsi'},
@@ -35,18 +41,160 @@ class _ProblemTaskState extends State<ProblemTask> {
     {'icon': null, 'title': 'Qeyd'},
   ];
 
+  String _getSuffixText(TaskModel taskData, String title) {
+    switch (title) {
+      case 'Ad və soyad:':
+        return taskData.fullName ?? '';
+      case 'Qeydiyyat nömrəsi':
+        return taskData.registrationNumber ?? '';
+      case 'Əlaqə nömrəsi':
+        return taskData.contactNumber ?? '';
+      case 'Adres':
+        return taskData.location ?? '';
+      case 'Region':
+        return taskData.group?.isNotEmpty == true
+            ? taskData.group!.first.region ?? ''
+            : 'N/A';
+      case 'Zaman':
+        final date = taskData.date ?? '-';
+        final startTime = taskData.startTime ?? '-';
+        final endTime = taskData.endTime ?? '-';
+        return '$date, $startTime - $endTime'; // e.g., "2023-08-17, 14:30:00 - 16:30:00"
+
+      case 'Status':
+        return taskData.status ?? '';
+      case 'Texniki qrup':
+        return taskData.group?.isNotEmpty == true
+            ? taskData.group!.first.group ?? ''
+            : 'N/A';
+      case 'Qeyd':
+        return taskData.note ?? '';
+      default:
+        return '';
+    }
+  }
+
+  Future<void> _updateTask() async {
+    try {
+      final Dio dio = Dio();
+
+      String formattedStartTime = '';
+      String formattedEndTime = '';
+
+      if (widget.taskData.startTime != null &&
+          widget.taskData.startTime!.isNotEmpty) {
+        try {
+          final parsedStartTime =
+              DateFormat('HH:mm').parse(widget.taskData.startTime!);
+          formattedStartTime = DateFormat('HH:mm:ss').format(parsedStartTime);
+        } catch (e) {
+          print('Error parsing start time: $e');
+        }
+      }
+
+      if (widget.taskData.endTime != null &&
+          widget.taskData.endTime!.isNotEmpty) {
+        try {
+          final parsedEndTime =
+              DateFormat('HH:mm').parse(widget.taskData.endTime!);
+          formattedEndTime = DateFormat('HH:mm:ss').format(parsedEndTime);
+        } catch (e) {
+          print('Error parsing end time: $e');
+        }
+      }
+
+      List<int?> groupIds = widget.taskData.group != null
+          ? widget.taskData.group!.map((g) => g.id).toList()
+          : [];
+
+      Map<String, dynamic> updateData = {
+        "full_name": widget.taskData.fullName ?? "",
+        "start_time": formattedStartTime,
+        "end_time": formattedEndTime,
+        "registration_number": widget.taskData.registrationNumber ?? "",
+        "contact_number": widget.taskData.contactNumber ?? "",
+        "location": widget.taskData.location ?? "",
+        "status": widget.taskData.status,
+        "group": groupIds,
+        "note": widget.taskData.note ?? "",
+        "is_tv": widget.taskData.isTv ?? false,
+        "is_voice": widget.taskData.isVoice ?? false,
+        "is_internet": widget.taskData.isInternet ?? false,
+        "date": widget.taskData.date,
+      };
+
+      final String uri =
+          'http://135.181.42.192/services/update_task/${widget.taskId}/';
+
+      final response = await dio.patch(
+        uri,
+        data: updateData,
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Task updated successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update task: ${response.statusMessage}'),
+          ),
+        );
+        print('Failed to update task: ${response.statusMessage}');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print('Dio error: ${e.message}');
+        if (e.response != null) {
+          print('Error response: ${e.response?.data}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error updating task: ${e.response?.data}')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content:
+                    Text('Error updating task: An unknown error occurred')),
+          );
+        }
+      } else {
+        print('Unknown error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Error updating task: An unknown error occurred')),
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     task = TaskService().fetchTask(widget.taskId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MainNotifier>().checkAdmin();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isAdmin = context.watch<MainNotifier>().isAdmin;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Problem'),
         backgroundColor: Colors.white,
+        actions: [
+          if (isAdmin)
+            IconButton(
+              icon: const Icon(
+                Icons.save,
+                color: Colors.blue,
+              ),
+              onPressed: _updateTask,
+            ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -75,12 +223,16 @@ class _ProblemTaskState extends State<ProblemTask> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
-                          child: TextField(
-                            textAlign: TextAlign.right,
+                          child: TextFormField(
+                            initialValue: suffixText,
+                            textAlign: TextAlign.left,
                             decoration: InputDecoration(
                               labelText: data['title'] as String,
                               labelStyle: const TextStyle(
-                                  color: Colors.black, fontSize: 18),
+                                color: Colors.black,
+                                fontSize: 18,
+                                textBaseline: TextBaseline.alphabetic,
+                              ),
                               prefixIcon: data['icon'] != null
                                   ? Icon(
                                       data['icon'] as IconData,
@@ -103,13 +255,12 @@ class _ProblemTaskState extends State<ProblemTask> {
                                     )
                                   : null,
                             ),
-                            readOnly: true,
-                            controller: TextEditingController(text: suffixText),
+                            readOnly: !isAdmin || isServisField,
                           ),
                         );
                       }),
                       const SizedBox(height: 16),
-                      if (widget.serviceType != null)
+                      if (widget.serviceType.isNotEmpty)
                         ServiceDetailsWidget(
                           serviceType: widget.serviceType,
                           taskId: widget.taskId,
@@ -178,42 +329,13 @@ class _ProblemTaskState extends State<ProblemTask> {
     );
   }
 
-  String _getSuffixText(TaskModel taskData, String title) {
-    switch (title) {
-      case 'Ad və soyad:':
-        return taskData.fullName ?? '';
-      case 'Qeydiyyat nömrəsi':
-        return taskData.registrationNumber ?? '';
-      case 'Əlaqə nömrəsi':
-        return taskData.contactNumber ?? '';
-      case 'Adres':
-        return taskData.location ?? '';
-      case 'Region':
-        return taskData.group?.isNotEmpty == true
-            ? taskData.group!.first.region ?? ''
-            : 'N/A';
-      case 'Zaman':
-        return '${taskData.date}, ${taskData.time}';
-      case 'Status':
-        return taskData.status ?? '';
-      case 'Texniki qrup':
-        return taskData.group?.isNotEmpty == true
-            ? taskData.group!.first.group ?? ''
-            : 'N/A';
-      case 'Qeyd':
-        return taskData.note ?? '';
-      default:
-        return '';
-    }
-  }
-
   List<String> _getAvailableServiceTypes(TaskModel taskData) {
     List<String> availableServiceTypes = [];
     if (taskData.isInternet == true && taskData.internet == null) {
       availableServiceTypes.add('Internet');
     }
     if (taskData.isTv == true && taskData.tv == null) {
-      availableServiceTypes.add('Tv');
+      availableServiceTypes.add('TV');
     }
     if (taskData.isVoice == true && taskData.voice == null) {
       availableServiceTypes.add('Voice');

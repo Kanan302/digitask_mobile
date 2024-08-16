@@ -44,6 +44,7 @@ class _IdxalDialogState extends State<IdxalDialog> {
 
       if (response.statusCode == 200) {
         Navigator.of(context).pop();
+        Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Məlumatlar uğurla yeniləndi')),
         );

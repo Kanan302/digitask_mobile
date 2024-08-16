@@ -13,6 +13,8 @@ class TaskModel {
   String? location;
   String? note;
   String? date;
+  String? startTime;
+  String? endTime;
   String? time;
   String? status;
   bool? isVoice;
@@ -23,30 +25,33 @@ class TaskModel {
   Voice? voice;
   Internet? internet;
 
-  TaskModel(
-      {required this.id,
-      this.group,
-      this.fullName,
-      this.firstName,
-      this.lastName,
-      this.createdAt,
-      this.updatedAt,
-      this.taskType,
-      this.description,
-      this.registrationNumber,
-      this.contactNumber,
-      this.location,
-      this.note,
-      this.date,
-      this.time,
-      this.status,
-      this.isVoice,
-      this.isInternet,
-      this.isTv,
-      this.user,
-      this.tv,
-      this.voice,
-      this.internet});
+  TaskModel({
+    required this.id,
+    this.group,
+    this.fullName,
+    this.firstName,
+    this.lastName,
+    this.createdAt,
+    this.updatedAt,
+    this.taskType,
+    this.description,
+    this.registrationNumber,
+    this.contactNumber,
+    this.location,
+    this.note,
+    this.date,
+    this.startTime,
+    this.endTime,
+    this.time,
+    this.status,
+    this.isVoice,
+    this.isInternet,
+    this.isTv,
+    this.user,
+    this.tv,
+    this.voice,
+    this.internet,
+  });
 
   TaskModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -68,6 +73,8 @@ class TaskModel {
     location = json['location'];
     note = json['note'];
     date = json['date'];
+    startTime = json['start_time'];
+    endTime = json['end_time'];
     time = json['time'];
     status = json['status'];
     isVoice = json['is_voice'];
@@ -98,6 +105,8 @@ class TaskModel {
     data['location'] = location;
     data['note'] = note;
     data['date'] = date;
+    data['start_time'] = startTime;
+    data['end_time'] = endTime;
     data['time'] = time;
     data['status'] = status;
     data['is_voice'] = isVoice;

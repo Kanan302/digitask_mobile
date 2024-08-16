@@ -98,6 +98,7 @@ class _IxracDialogState extends State<IxracDialog> {
 
       if (response.statusCode == 200) {
         Navigator.of(context).pop();
+        Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Məlumatlar uğurla yeniləndi')),
         );
@@ -161,7 +162,8 @@ class _IxracDialogState extends State<IxracDialog> {
                     value: user['id'],
                     child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.5,
-                        child: Text('${user['name']} ')),
+                        child:
+                            Text('${user['name']} ' '(${user['user_type']})')),
                   );
                 }).toList(),
                 onChanged: (value) {
