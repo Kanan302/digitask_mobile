@@ -87,14 +87,14 @@ class _ProblemTaskState extends State<ProblemTask> {
     dateController = TextEditingController(text: widget.taskData.date ?? '');
     startTimeController = TextEditingController(
       text: widget.taskData.startTime != null
-          ? DateFormat('HH:mm:ss')
+          ? DateFormat('HH:mm')
               .format(DateFormat('HH:mm:ss').parse(widget.taskData.startTime!))
           : '',
     );
 
     endTimeController = TextEditingController(
       text: widget.taskData.endTime != null
-          ? DateFormat('HH:mm:ss')
+          ? DateFormat('HH:mm')
               .format(DateFormat('HH:mm:ss').parse(widget.taskData.endTime!))
           : '',
     );
