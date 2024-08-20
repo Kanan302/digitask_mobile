@@ -5,7 +5,6 @@ class TimeSelectionField extends StatelessWidget {
   final TextEditingController controller;
   final bool isAdmin;
   final VoidCallback? onTap;
-  final ValueChanged<String>? onChanged;
 
   const TimeSelectionField({
     super.key,
@@ -13,7 +12,6 @@ class TimeSelectionField extends StatelessWidget {
     required this.controller,
     required this.isAdmin,
     this.onTap,
-    this.onChanged,
   });
 
   @override
@@ -53,7 +51,6 @@ class TimeSelectionField extends StatelessWidget {
               ),
               readOnly: !isAdmin,
               onTap: isAdmin ? onTap : null,
-              onChanged: onChanged,
             ),
           ],
         ),

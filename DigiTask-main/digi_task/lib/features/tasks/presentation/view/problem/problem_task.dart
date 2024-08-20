@@ -43,6 +43,7 @@ class _ProblemTaskState extends State<ProblemTask> {
   late TextEditingController endTimeController;
 
   String? selectedTechnicalGroup;
+  String? selectedStatus;
 
   final List<String> statusOptions = ['completed', 'inprogress', 'waiting'];
   final List<String> technicalGroupOptions = ['Qrup 1', 'Qrup 2'];
@@ -86,13 +87,14 @@ class _ProblemTaskState extends State<ProblemTask> {
     dateController = TextEditingController(text: widget.taskData.date ?? '');
     startTimeController = TextEditingController(
       text: widget.taskData.startTime != null
-          ? DateFormat('HH:mm')
+          ? DateFormat('HH:mm:ss')
               .format(DateFormat('HH:mm:ss').parse(widget.taskData.startTime!))
           : '',
     );
+
     endTimeController = TextEditingController(
       text: widget.taskData.endTime != null
-          ? DateFormat('HH:mm')
+          ? DateFormat('HH:mm:ss')
               .format(DateFormat('HH:mm:ss').parse(widget.taskData.endTime!))
           : '',
     );
@@ -124,12 +126,21 @@ class _ProblemTaskState extends State<ProblemTask> {
       final now = DateTime.now();
       final selectedDateTime = DateTime(
           now.year, now.month, now.day, pickedTime.hour, pickedTime.minute);
-      final formattedTime = DateFormat('HH:mm').format(selectedDateTime);
-      print('before ${startTimeController.text}');
+
+      final fullTime = DateFormat('HH:mm:ss').format(selectedDateTime);
+      final displayTime = DateFormat('HH:mm:ss').format(selectedDateTime);
+
       setState(() {
-        controller.text = formattedTime;
+        controller.text = displayTime;
+        if (controller == startTimeController) {
+          widget.taskData.startTime = fullTime;
+        } else if (controller == endTimeController) {
+          widget.taskData.endTime = fullTime;
+        }
       });
-      print('after ${startTimeController.text}');
+
+      print(
+          'Updated ${controller == startTimeController ? 'Start Time' : 'End Time'}: $displayTime');
     }
   }
 
@@ -164,7 +175,6 @@ class _ProblemTaskState extends State<ProblemTask> {
   Future<void> _updateTask() async {
     try {
       final Dio dio = Dio();
-
       final selectedGroup =
           selectedTechnicalGroup ?? widget.taskData.group?.first.group ?? '';
       final groupId = selectedGroup == 'Qrup 1' ? 1 : 2;
@@ -172,8 +182,8 @@ class _ProblemTaskState extends State<ProblemTask> {
 
       Map<String, dynamic> updateData = {
         "full_name": fullNameController.text,
-        "start_time": startTimeController.text,
-        "end_time": endTimeController.text,
+        "start_time": widget.taskData.startTime,
+        "end_time": widget.taskData.endTime,
         "registration_number": registrationNumberController.text,
         "contact_number": contactNumberController.text,
         "location": locationController.text,
@@ -186,7 +196,7 @@ class _ProblemTaskState extends State<ProblemTask> {
         "group": groupData,
       };
 
-      print('Update Data: $updateData'); // Debug print
+      print('Update Data: $updateData');
 
       final String uri =
           'http://135.181.42.192/services/update_task/${widget.taskId}/';
@@ -264,7 +274,9 @@ class _ProblemTaskState extends State<ProblemTask> {
                     taskData.registrationNumber ?? '';
                 contactNumberController.text = taskData.contactNumber ?? '';
                 locationController.text = taskData.location ?? '';
-                // statusController.text = taskData.status ?? '';
+                selectedStatus ??= taskData.status;
+                statusController.text = selectedStatus ?? "";
+
                 // startTimeController.text = taskData.startTime ?? '-';
                 // endTimeController.text = taskData.endTime ?? '';
 
@@ -354,8 +366,10 @@ class _ProblemTaskState extends State<ProblemTask> {
                                 labelText: 'Başlangıç Saatı',
                                 controller: startTimeController,
                                 isAdmin: isAdmin,
-                                onTap: () =>
-                                    _selectTime(context, startTimeController),
+                                onTap: () async {
+                                  await _selectTime(
+                                      context, startTimeController);
+                                },
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -364,17 +378,9 @@ class _ProblemTaskState extends State<ProblemTask> {
                                 labelText: 'Bitiş Saatı',
                                 controller: endTimeController,
                                 isAdmin: isAdmin,
-                                onTap: () =>
-                                    _selectTime(context, endTimeController),
-                                // onChanged: (String? newValue) {
-                                //   setState(() {
-                                //     if (newValue != null &&
-                                //         newValue.isNotEmpty) {
-                                //       startTimeController.text =
-                                //           newValue; // Update your state with the new time value
-                                //     }
-                                //   });
-                                // },
+                                onTap: () async {
+                                  await _selectTime(context, endTimeController);
+                                },
                               ),
                             ),
                           ],
@@ -398,6 +404,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                                   onChanged: isAdmin
                                       ? (String? newValue) {
                                           setState(() {
+                                            selectedStatus = newValue;
                                             statusController.text =
                                                 newValue ?? '';
                                           });
