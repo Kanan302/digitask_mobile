@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:digi_task/features/tasks/presentation/view/problem/task_service.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/widgets/problem_card.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/widgets/problem_dropdown.dart';
+import 'package:digi_task/features/tasks/presentation/view/problem/widgets/problem_multiselect.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/widgets/problem_timefield.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +45,11 @@ class _ProblemTaskState extends State<ProblemTask> {
 
   String? selectedTechnicalGroup;
   String? selectedStatus;
+  List<String> selectedServices = [];
 
   final List<String> statusOptions = ['completed', 'inprogress', 'waiting'];
   final List<String> technicalGroupOptions = ['Qrup 1', 'Qrup 2'];
+  final List<String> services = ['Tv', 'Internet', 'Voice'];
 
   final List<Map<String, dynamic>> mockData = [
     {'icon': Icons.person_2_outlined, 'title': 'Ad və soyad:'},
@@ -449,6 +452,19 @@ class _ProblemTaskState extends State<ProblemTask> {
                               ),
                             ],
                           ),
+                        ),
+                        MultiSelectWithIcon(
+                          labelText: 'Servis',
+                          icon: Icons.miscellaneous_services_outlined,
+                          isAdmin: isAdmin,
+                          emptyText: 'Servis növü seçin zəhmət olmasa',
+                          options: services,
+                          items: selectedServices,
+                          onChanged: (List<String> value) {
+                            setState(() {
+                              selectedServices = value;
+                            });
+                          },
                         ),
                         const SizedBox(height: 16),
                         if (widget.serviceType.isNotEmpty)
