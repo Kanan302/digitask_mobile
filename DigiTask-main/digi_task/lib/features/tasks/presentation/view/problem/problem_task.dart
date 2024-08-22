@@ -4,7 +4,7 @@ import 'package:digi_task/features/tasks/presentation/view/problem/widgets/probl
 import 'package:digi_task/features/tasks/presentation/view/problem/widgets/problem_dropdown.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/widgets/problem_multiselect.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/widgets/problem_timefield.dart';
-import 'package:dio/dio.dart';
+import 'package:digi_task/features/tasks/presentation/view/problem/widgets/task_api.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +56,6 @@ class _ProblemTaskState extends State<ProblemTask> {
     {'icon': Icons.phone, 'title': 'Qeydiyyat nömrəsi'},
     {'icon': Icons.phone_callback_outlined, 'title': 'Əlaqə nömrəsi'},
     {'icon': Icons.location_on_outlined, 'title': 'Adres'},
-    {'icon': Icons.miscellaneous_services_outlined, 'title': 'Servis'},
     {'icon': Icons.date_range_outlined, 'title': 'Tarix'},
     {'icon': null, 'title': 'Qeyd'},
   ];
@@ -101,6 +100,9 @@ class _ProblemTaskState extends State<ProblemTask> {
               .format(DateFormat('HH:mm:ss').parse(widget.taskData.endTime!))
           : '',
     );
+    if (widget.taskData.isTv == true) selectedServices.add('Tv');
+    if (widget.taskData.isInternet == true) selectedServices.add('Internet');
+    if (widget.taskData.isVoice == true) selectedServices.add('Voice');
   }
 
   @override
@@ -121,9 +123,14 @@ class _ProblemTaskState extends State<ProblemTask> {
   Future<void> _selectTime(
       BuildContext context, TextEditingController controller) async {
     final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (context, child) {
+          return MediaQuery(
+              data:
+                  MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+              child: child!);
+        });
 
     if (pickedTime != null) {
       final now = DateTime.now();
@@ -147,92 +154,32 @@ class _ProblemTaskState extends State<ProblemTask> {
     }
   }
 
-  Future<TaskModel> _fetchProblem() async {
-    try {
-      final Dio dio = Dio();
-      final String url =
-          'http://135.181.42.192/services/task/${widget.taskId}/';
-
-      final response = await dio.get(url);
-
-      if (response.statusCode == 200) {
-        final taskData = TaskModel.fromJson(response.data);
-        return taskData;
-      } else {
-        throw Exception('Failed to fetch task: ${response.statusMessage}');
-      }
-    } catch (e) {
-      String errorMessage = 'Error fetching task: An unknown error occurred';
-      if (e is DioException) {
-        if (e.response != null) {
-          errorMessage = 'Error fetching task: ${e.response?.data}';
-        }
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
-      return Future.error(errorMessage);
-    }
-  }
 
   Future<void> _updateTask() async {
     try {
-      final Dio dio = Dio();
       final selectedGroup =
           selectedTechnicalGroup ?? widget.taskData.group?.first.group ?? '';
       final groupId = selectedGroup == 'Qrup 1' ? 1 : 2;
-      final groupData = groupId != null ? [groupId] : [];
+      final groupData = groupId != null ? [groupId] : <int>[];
 
-      Map<String, dynamic> updateData = {
-        "full_name": fullNameController.text,
-        "start_time": widget.taskData.startTime,
-        "end_time": widget.taskData.endTime,
-        "registration_number": registrationNumberController.text,
-        "contact_number": contactNumberController.text,
-        "location": locationController.text,
-        "status": statusController.text,
-        "note": noteController.text,
-        "is_tv": widget.taskData.isTv ?? false,
-        "is_voice": widget.taskData.isVoice ?? false,
-        "is_internet": widget.taskData.isInternet ?? false,
-        "date": dateController.text,
-        "group": groupData,
-      };
-
-      print('Update Data: $updateData');
-
-      final String uri =
-          'http://135.181.42.192/services/update_task/${widget.taskId}/';
-
-      final response = await dio.patch(uri, data: updateData);
-      print(response.statusCode);
-      print(response.data);
-
-      if (response.statusCode == 200) {
-        setState(() {
-          task = _fetchProblem();
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Task updated successfully')),
-        );
-        Navigator.of(context).pop();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to update task: ${response.statusMessage}'),
-          ),
-        );
-      }
-    } catch (e) {
-      String errorMessage = 'Error updating task: An unknown error occurred';
-      if (e is DioException) {
-        if (e.response != null) {
-          errorMessage = 'Error updating task: ${e.response?.data}';
-        }
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
+      await TaskApi().updateTask(
+        context: context,
+        taskId: widget.taskId.toString(),
+        fullName: fullNameController.text,
+        startTime: startTimeController.text,
+        endTime: endTimeController.text,
+        registrationNumber: registrationNumberController.text,
+        contactNumber: contactNumberController.text,
+        location: locationController.text,
+        status: statusController.text,
+        note: noteController.text,
+        date: dateController.text,
+        groupData: groupData,
+        selectedServices: selectedServices,
+        taskData: widget.taskData,
       );
+    } catch (e) {
+      print('Failed to update task: $e');
     }
   }
 
@@ -269,7 +216,7 @@ class _ProblemTaskState extends State<ProblemTask> {
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data == null) {
-                return const Center(child: Text('No data available'));
+                return const Center(child: Text('Məlumat yoxdur'));
               } else {
                 final taskData = snapshot.data!;
                 fullNameController.text = taskData.fullName ?? '';
@@ -279,10 +226,6 @@ class _ProblemTaskState extends State<ProblemTask> {
                 locationController.text = taskData.location ?? '';
                 selectedStatus ??= taskData.status;
                 statusController.text = selectedStatus ?? "";
-
-                // startTimeController.text = taskData.startTime ?? '-';
-                // endTimeController.text = taskData.endTime ?? '';
-
                 noteController.text = taskData.note ?? '';
                 dateController.text = taskData.date ?? '';
                 groupController.text = (taskData.group != null &&
@@ -294,6 +237,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                 final availableServiceTypes =
                     _getAvailableServiceTypes(taskData);
                 final hasAvailableServices = availableServiceTypes.isNotEmpty;
+
                 return Container(
                   color: Colors.white,
                   child: Form(
@@ -303,7 +247,6 @@ class _ProblemTaskState extends State<ProblemTask> {
                         ...mockData
                             .where((data) => data['title'] != 'Saat')
                             .map((data) {
-                          final isServisField = data['title'] == 'Servis';
                           final controller =
                               _getControllerForTitle(data['title'] as String);
                           return Padding(
@@ -325,28 +268,13 @@ class _ProblemTaskState extends State<ProblemTask> {
                                         color: Colors.blue,
                                       )
                                     : null,
-                                suffixIcon: isServisField
-                                    ? Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            widget.serviceType,
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                        ],
-                                      )
-                                    : null,
                               ),
                               onTap: () {
                                 if (data['title'] == 'Saat') {
                                   _selectTime(context, controller);
                                 }
                               },
-                              readOnly: !isAdmin || isServisField,
+                              readOnly: !isAdmin,
                               validator: data['title'] == 'Tarix'
                                   ? (value) {
                                       final datePattern =
@@ -463,6 +391,13 @@ class _ProblemTaskState extends State<ProblemTask> {
                           onChanged: (List<String> value) {
                             setState(() {
                               selectedServices = value;
+                              print('Selected services: $selectedServices');
+                              widget.taskData.isTv =
+                                  selectedServices.contains('Tv');
+                              widget.taskData.isInternet =
+                                  selectedServices.contains('Internet');
+                              widget.taskData.isVoice =
+                                  selectedServices.contains('Voice');
                             });
                           },
                         ),
