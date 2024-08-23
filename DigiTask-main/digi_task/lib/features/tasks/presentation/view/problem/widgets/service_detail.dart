@@ -140,7 +140,7 @@ class _ServiceDetailsWidgetState extends State<ServiceDetailsWidget> {
       return _buildInternetDetails(data, isEditing);
     } else if (data is Tv) {
       return _buildTvDetails(data, isEditing);
-    } else if (data is Voice) {
+    } else if (data is Voice) { 
       return _buildVoiceDetails(data, isEditing);
     }
     return const SizedBox.shrink();

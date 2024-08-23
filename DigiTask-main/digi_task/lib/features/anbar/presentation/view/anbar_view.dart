@@ -183,7 +183,10 @@ class _AnbarViewState extends State<AnbarView> {
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            return IxracDialog(itemId: item.id);
+                                            return IxracDialog(
+                                              itemId: item.id,
+                                              maxNumber: item.number ?? 0,
+                                            );
                                           },
                                         );
                                       }

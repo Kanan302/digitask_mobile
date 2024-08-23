@@ -42,8 +42,8 @@ class AppField extends StatelessWidget {
       children: [
         Text(
           title,
-          style: context.typography.body2SemiBold
-              .copyWith(color: isProfileView == true ? context.colors.neutralColor10 : context.colors.neutralColor60),
+          style: context.typography.body2Regular
+              .copyWith(color: context.colors.neutralColor10),
         ),
         const SizedBox(
           height: 8,
@@ -56,8 +56,10 @@ class AppField extends StatelessWidget {
           onTap: onTap,
           minLines: minLine,
           maxLines: maxLine,
-          style: context.typography.body2Regular
-              .copyWith(color: isProfileView == true ? context.colors.neutralColor40 : context.colors.neutralColor10),
+          style: context.typography.body2Regular.copyWith(
+              color: isProfileView == true
+                  ? context.colors.neutralColor40
+                  : context.colors.neutralColor10),
           controller: controller,
           decoration: InputDecoration(
             suffixIcon: isWithIcon == true
@@ -78,12 +80,19 @@ class AppField extends StatelessWidget {
                 : null,
             filled: true,
             hintText: isProfileView == true ? null : hintText,
-            hintStyle: context.typography.body2Regular.copyWith(color: context.colors.neutralColor10),
+            hintStyle: context.typography.body2SemiBold.copyWith(
+                color: isProfileView == true
+                    ? context.colors.neutralColor10
+                    : context.colors.neutralColor60),
             fillColor: filledColor ?? context.colors.neutralColor100,
             enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide.none, borderRadius: BorderRadius.circular(isProfileView == true ? 24 : 5)),
+                borderSide: BorderSide.none,
+                borderRadius:
+                    BorderRadius.circular(isProfileView == true ? 24 : 5)),
             focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide.none, borderRadius: BorderRadius.circular(isProfileView == true ? 24 : 5)),
+                borderSide: BorderSide.none,
+                borderRadius:
+                    BorderRadius.circular(isProfileView == true ? 24 : 5)),
           ),
         ),
       ],

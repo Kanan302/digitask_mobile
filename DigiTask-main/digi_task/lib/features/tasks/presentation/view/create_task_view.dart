@@ -81,7 +81,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 controller: nameController,
                 filledColor: context.colors.backgroundColor,
                 isProfileView: false,
-                hintText: 'Ayxan Osmanov',
+                hintText: 'Ad Soyad',
               ),
               const SizedBox(
                 height: 16,
@@ -220,8 +220,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 children: [
                   Text(
                     'Servis',
-                    style: context.typography.body2SemiBold
-                        .copyWith(color: context.colors.neutralColor60),
+                    style: context.typography.body2Regular
+                        .copyWith(color: context.colors.neutralColor10),
                   ),
                   const SizedBox(
                     height: 8,
@@ -281,8 +281,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 children: [
                   Text(
                     'Texniki Qrup',
-                    style: context.typography.body2SemiBold
-                        .copyWith(color: context.colors.neutralColor60),
+                    style: context.typography.body2Regular
+                        .copyWith(color: context.colors.neutralColor10),
                   ),
                 ],
               ),
@@ -313,7 +313,8 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 fieldBackgroundColor: context.colors.backgroundColor,
                 focusedBorderColor: Colors.white,
                 hint: "Qrup",
-                hintStyle: context.typography.body2Regular,
+                hintStyle: context.typography.body2SemiBold
+                    .copyWith(color: context.colors.neutralColor60),
                 options: const <ValueItem>[
                   ValueItem(label: 'Qrup 1', value: '1'),
                   ValueItem(label: 'Qrup 2', value: '2'),
@@ -368,7 +369,9 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                             location: adressController.text.trim(),
                             note: noteController.text.trim(),
                             group: selectGroupList,
-                            time: "$startTimeFormatted-$endTimeFormatted",
+                            // time: "$startTimeFormatted-$endTimeFormatted",
+                            startTime: startTimeFormatted,
+                            endTime: endTimeFormatted,
                             taskType: taskType,
                             status: "waiting");
                         await notifier.createTask(model);

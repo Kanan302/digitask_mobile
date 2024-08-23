@@ -194,7 +194,7 @@ class _TasksTabState extends State<TasksTab> with TickerProviderStateMixin {
                                 ),
                             ],
                           ),
-                          name: task.firstName ?? 'Not found user',
+                          name: task.firstName ?? 'İstifadəçi tapılmadı',
                           time: formattedDate == nowFormattedDate
                               ? 'Bu gün, ${task.time}'
                               : '$formattedDate, ${task.time}',

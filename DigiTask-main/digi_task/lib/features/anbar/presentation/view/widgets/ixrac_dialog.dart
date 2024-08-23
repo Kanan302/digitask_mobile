@@ -6,8 +6,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class IxracDialog extends StatefulWidget {
   final int? itemId;
+  final int maxNumber;
 
-  const IxracDialog({super.key, required this.itemId});
+  const IxracDialog({
+    super.key,
+    required this.itemId,
+    required this.maxNumber,
+  });
 
   @override
   State<IxracDialog> createState() => _IxracDialogState();
@@ -218,6 +223,19 @@ class _IxracDialogState extends State<IxracDialog> {
                   labelText: 'Sayı',
                   border: OutlineInputBorder(),
                 ),
+                onChanged: (value) {
+                  if (value.isNotEmpty) {
+                    int? enteredNumber = int.tryParse(value);
+                    if (enteredNumber != null &&
+                        enteredNumber > widget.maxNumber) {
+                      _numberController.text =
+                          value.substring(0, value.length - 1);
+                      _numberController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: _numberController.text.length),
+                      );
+                    }
+                  }
+                },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Bu sahə boş ola bilməz';

@@ -46,6 +46,7 @@ class _ProblemTaskState extends State<ProblemTask> {
   String? selectedTechnicalGroup;
   String? selectedStatus;
   List<String> selectedServices = [];
+  bool isEditing = false;
 
   final List<String> statusOptions = ['completed', 'inprogress', 'waiting'];
   final List<String> technicalGroupOptions = ['Qrup 1', 'Qrup 2'];
@@ -105,21 +106,6 @@ class _ProblemTaskState extends State<ProblemTask> {
     if (widget.taskData.isVoice == true) selectedServices.add('Voice');
   }
 
-  @override
-  void dispose() {
-    fullNameController.dispose();
-    registrationNumberController.dispose();
-    contactNumberController.dispose();
-    locationController.dispose();
-    statusController.dispose();
-    groupController.dispose();
-    noteController.dispose();
-    dateController.dispose();
-    startTimeController.dispose();
-    endTimeController.dispose();
-    super.dispose();
-  }
-
   Future<void> _selectTime(
       BuildContext context, TextEditingController controller) async {
     final TimeOfDay? pickedTime = await showTimePicker(
@@ -153,7 +139,6 @@ class _ProblemTaskState extends State<ProblemTask> {
           'Updated ${controller == startTimeController ? 'Start Time' : 'End Time'}: $displayTime');
     }
   }
-
 
   Future<void> _updateTask() async {
     try {
@@ -194,13 +179,19 @@ class _ProblemTaskState extends State<ProblemTask> {
         actions: [
           if (isAdmin)
             IconButton(
-              icon: const Icon(
-                Icons.save,
+              icon: Icon(
+                isEditing ? Icons.save : Icons.edit,
                 color: Colors.blue,
               ),
               onPressed: () async {
-                if (_formKey.currentState?.validate() ?? false) {
-                  await _updateTask();
+                if (isEditing) {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    await _updateTask();
+                  }
+                } else {
+                  setState(() {
+                    isEditing = true;
+                  });
                 }
               },
             ),
@@ -233,6 +224,16 @@ class _ProblemTaskState extends State<ProblemTask> {
                         taskData.group![0].group != null
                     ? taskData.group![0].group
                     : '')!;
+
+                // startTimeController.text = taskData.startTime ?? '-';
+                // endTimeController.text = taskData.endTime ?? '';
+
+                // List<String> selectedServices = [];
+                // if (taskData.isTv == true) selectedServices.add('Tv');
+                // if (taskData.isInternet == true) {
+                //   selectedServices.add('Internet');
+                // }
+                // if (taskData.isVoice == true) selectedServices.add('Voice');
 
                 final availableServiceTypes =
                     _getAvailableServiceTypes(taskData);
@@ -274,7 +275,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                                   _selectTime(context, controller);
                                 }
                               },
-                              readOnly: !isAdmin,
+                              readOnly: !isAdmin || !isEditing,
                               validator: data['title'] == 'Tarix'
                                   ? (value) {
                                       final datePattern =
@@ -296,7 +297,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                               child: TimeSelectionField(
                                 labelText: 'Başlangıç Saatı',
                                 controller: startTimeController,
-                                isAdmin: isAdmin,
+                                isAdmin: isAdmin && isEditing,
                                 onTap: () async {
                                   await _selectTime(
                                       context, startTimeController);
@@ -308,7 +309,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                               child: TimeSelectionField(
                                 labelText: 'Bitiş Saatı',
                                 controller: endTimeController,
-                                isAdmin: isAdmin,
+                                isAdmin: isAdmin && isEditing,
                                 onTap: () async {
                                   await _selectTime(context, endTimeController);
                                 },
@@ -341,7 +342,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                                           });
                                         }
                                       : null,
-                                  isAdmin: isAdmin,
+                                  isAdmin: isAdmin && isEditing,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Statusu seçin';
@@ -369,7 +370,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                                           });
                                         }
                                       : null,
-                                  isAdmin: isAdmin,
+                                  isAdmin: isAdmin && isEditing,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Texniki qrup seçin';
@@ -384,7 +385,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                         MultiSelectWithIcon(
                           labelText: 'Servis',
                           icon: Icons.miscellaneous_services_outlined,
-                          isAdmin: isAdmin,
+                          isAdmin: isAdmin && isEditing,
                           emptyText: 'Servis növü seçin zəhmət olmasa',
                           options: services,
                           items: selectedServices,
@@ -481,5 +482,20 @@ class _ProblemTaskState extends State<ProblemTask> {
       availableServiceTypes.add('Voice');
     }
     return availableServiceTypes;
+  }
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    registrationNumberController.dispose();
+    contactNumberController.dispose();
+    locationController.dispose();
+    statusController.dispose();
+    groupController.dispose();
+    noteController.dispose();
+    dateController.dispose();
+    startTimeController.dispose();
+    endTimeController.dispose();
+    super.dispose();
   }
 }

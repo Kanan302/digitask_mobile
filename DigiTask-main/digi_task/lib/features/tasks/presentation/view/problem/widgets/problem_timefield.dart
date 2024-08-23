@@ -44,7 +44,7 @@ class TimeSelectionField extends StatelessWidget {
                   Icons.access_time_rounded,
                   color: Colors.blue,
                 ),
-                hintText: isAdmin ? null : 'Görünmədi',
+                hintText: isAdmin ? null : 'Yoxdur',
                 hintStyle: TextStyle(
                   color: isAdmin ? Colors.transparent : Colors.grey,
                 ),
