@@ -3,6 +3,7 @@ import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:digi_task/presentation/components/input/app_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
@@ -26,6 +27,7 @@ class _ProfileEditViewState extends State<ProfileEditView> {
   @override
   Widget build(BuildContext context) {
     final userModel = GoRouterState.of(context).extra as UserProfileModel;
+
     return Scaffold(
       backgroundColor: context.colors.backgroundColor,
       appBar: AppBar(
@@ -40,7 +42,9 @@ class _ProfileEditViewState extends State<ProfileEditView> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: IconButton(onPressed: () {}, icon: SvgPicture.asset(IconPath.menu.toPathSvg)),
+            child: IconButton(
+                onPressed: () {},
+                icon: SvgPicture.asset(IconPath.menu.toPathSvg)),
           )
         ],
       ),
@@ -52,37 +56,43 @@ class _ProfileEditViewState extends State<ProfileEditView> {
             children: [
               AppField(
                 title: "Ad Soyad",
-                controller: nameController..text = "${userModel.firstName} ${userModel.lastName}",
+                controller: nameController
+                  ..text =
+                      "${userModel.firstName ?? ''} ${userModel.lastName ?? ''}",
               ),
               const SizedBox(
                 height: 12,
               ),
               AppField(
                 title: "Region",
-                controller: regionController..text = "${userModel.group?.region}",
+                controller: regionController
+                  ..text = userModel.group?.region ?? '',
               ),
               const SizedBox(
                 height: 12,
               ),
               AppField(
                 title: "Qrup",
-                controller: qrupController..text = "${userModel.group?.group}",
+                controller: qrupController..text = userModel.group?.group ?? "",
               ),
               const SizedBox(
                 height: 32,
               ),
               AppField(
                 title: "Əlaqə nömrəsi",
-                controller: phoneController..text = "${userModel.phone}",
+                controller: phoneController..text = userModel.phone ?? '',
                 isWithIcon: true,
                 iconPath: IconPath.phoneblue.toPathSvg,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]+'))
+                ],
               ),
               const SizedBox(
                 height: 12,
               ),
               AppField(
                 title: "Mail adresi",
-                controller: mailController..text = "${userModel.email}",
+                controller: mailController..text = userModel.email ?? '',
                 isWithIcon: true,
                 iconPath: IconPath.mail.toPathSvg,
               ),

@@ -2,6 +2,7 @@ import 'package:digi_task/core/constants/path/icon_path.dart';
 import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/core/utility/extension/icon_path_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AppField extends StatelessWidget {
@@ -20,6 +21,7 @@ class AppField extends StatelessWidget {
     this.onlyRead = false,
     this.centerText,
     this.keyboardType = TextInputType.text,
+    this.inputFormatters
   });
   final String title;
   final TextEditingController? controller;
@@ -34,6 +36,7 @@ class AppField extends StatelessWidget {
   final bool? onlyRead;
   final bool? centerText;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +64,7 @@ class AppField extends StatelessWidget {
                   ? context.colors.neutralColor40
                   : context.colors.neutralColor10),
           controller: controller,
+          inputFormatters: inputFormatters,
           decoration: InputDecoration(
             suffixIcon: isWithIcon == true
                 ? SvgPicture.asset(

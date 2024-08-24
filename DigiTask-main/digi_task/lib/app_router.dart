@@ -26,7 +26,6 @@ import 'notifier/home/main/main_notifier.dart';
 import 'presentation/pages/home/home_page.dart';
 import 'presentation/pages/onboarding/onboarding_page.dart';
 
-
 final _appRouterKey = GlobalKey<NavigatorState>();
 
 final class AppRouter {
@@ -101,8 +100,8 @@ final class AppRouter {
                   ..fetchTasks(queryType: 'connection'),
               ),
               ChangeNotifierProvider(
-                create: (context) => GetIt.instance<ProfileNotifier>()
-                  ..getUserInformation(),
+                create: (context) =>
+                    GetIt.instance<ProfileNotifier>()..getUserInformation(),
               ),
               ChangeNotifierProvider(
                 create: (context) => LocationService()..startGettingLocation(),

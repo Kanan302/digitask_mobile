@@ -7,6 +7,7 @@ import 'package:digi_task/presentation/components/button/login_button.dart';
 import 'package:digi_task/presentation/components/flushbar.dart';
 import 'package:digi_task/presentation/components/input/app_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -91,8 +92,11 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 controller: registrationController,
                 filledColor: context.colors.backgroundColor,
                 isProfileView: false,
-                hintText: '(555) 000-0000',
+                hintText: '0555555555',
                 keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]+'))
+                ],
               ),
               const SizedBox(
                 height: 16,
@@ -102,8 +106,11 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 controller: contactController,
                 filledColor: context.colors.backgroundColor,
                 isProfileView: false,
-                hintText: '(555) 000-0000',
+                hintText: '0555555555',
                 keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]+'))
+                ],
               ),
               const SizedBox(
                 height: 16,

@@ -6,6 +6,7 @@ import 'package:digi_task/features/tasks/presentation/view/problem/widgets/probl
 import 'package:digi_task/features/tasks/presentation/view/problem/widgets/problem_timefield.dart';
 import 'package:digi_task/features/tasks/presentation/view/problem/widgets/task_api.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:digi_task/features/tasks/data/model/task_model.dart';
@@ -287,6 +288,14 @@ class _ProblemTaskState extends State<ProblemTask> {
                                       return null;
                                     }
                                   : null,
+                              inputFormatters:
+                                  (data['title'] == 'Qeydiyyat nömrəsi' ||
+                                          data['title'] == 'Əlaqə nömrəsi')
+                                      ? [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'[0-9]+')),
+                                        ]
+                                      : null,
                             ),
                           );
                         }),

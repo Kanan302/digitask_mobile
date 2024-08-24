@@ -2,6 +2,7 @@ import 'package:digi_task/data/services/local/secure_service.dart';
 import 'package:digi_task/features/isciler/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class EditUserDialog extends StatefulWidget {
@@ -128,6 +129,9 @@ class _EditUserDialogState extends State<EditUserDialog> {
                   Expanded(
                     child: TextFormField(
                       controller: _phoneController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]+'))
+                      ],
                       decoration: const InputDecoration(
                           labelText: 'Nömrə', border: OutlineInputBorder()),
                       validator: (value) => value != null && value.isNotEmpty
