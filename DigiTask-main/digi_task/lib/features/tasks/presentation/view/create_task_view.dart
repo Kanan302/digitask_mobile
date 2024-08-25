@@ -83,7 +83,7 @@ class _CreateTaskViewState extends State<CreateTaskView> {
                 filledColor: context.colors.backgroundColor,
                 isProfileView: false,
                 hintText: 'Ad Soyad',
-              ),
+              ),  
               const SizedBox(
                 height: 16,
               ),

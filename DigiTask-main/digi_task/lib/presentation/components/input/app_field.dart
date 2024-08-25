@@ -6,23 +6,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AppField extends StatelessWidget {
-  const AppField({
-    super.key,
-    required this.title,
-    this.controller,
-    this.isWithIcon = false,
-    this.iconPath,
-    this.filledColor,
-    this.isProfileView = true,
-    this.hintText,
-    this.minLine = 1,
-    this.maxLine = 1,
-    this.onTap,
-    this.onlyRead = false,
-    this.centerText,
-    this.keyboardType = TextInputType.text,
-    this.inputFormatters
-  });
+  const AppField(
+      {super.key,
+      required this.title,
+      this.controller,
+      this.isWithIcon = false,
+      this.iconPath,
+      this.filledColor,
+      this.isProfileView = true,
+      this.hintText,
+      this.minLine = 1,
+      this.maxLine = 1,
+      this.onTap,
+      this.onlyRead = false,
+      this.centerText,
+      this.keyboardType = TextInputType.text,
+      this.inputFormatters});
   final String title;
   final TextEditingController? controller;
   final bool? isWithIcon;
@@ -46,7 +45,7 @@ class AppField extends StatelessWidget {
         Text(
           title,
           style: context.typography.body2Regular
-              .copyWith(color: context.colors.neutralColor10),
+              .copyWith(color: context.colors.neutralColor30),
         ),
         const SizedBox(
           height: 8,
@@ -59,10 +58,8 @@ class AppField extends StatelessWidget {
           onTap: onTap,
           minLines: minLine,
           maxLines: maxLine,
-          style: context.typography.body2Regular.copyWith(
-              color: isProfileView == true
-                  ? context.colors.neutralColor40
-                  : context.colors.neutralColor10),
+          style: context.typography.body2Regular
+              .copyWith(color: context.colors.neutralColor10),
           controller: controller,
           inputFormatters: inputFormatters,
           decoration: InputDecoration(
@@ -86,7 +83,7 @@ class AppField extends StatelessWidget {
             hintText: isProfileView == true ? null : hintText,
             hintStyle: context.typography.body2SemiBold.copyWith(
                 color: isProfileView == true
-                    ? context.colors.neutralColor10
+                    ? context.colors.neutralColor90
                     : context.colors.neutralColor60),
             fillColor: filledColor ?? context.colors.neutralColor100,
             enabledBorder: OutlineInputBorder(

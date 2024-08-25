@@ -1,7 +1,7 @@
-import 'package:digi_task/features/anbar/presentation/view/create/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:digi_task/features/anbar/data/model/anbar_item_model.dart';
+import 'package:digi_task/features/anbar/presentation/view/create/api_service.dart';
 
 class AnbarDialog extends StatefulWidget {
   const AnbarDialog({super.key});
@@ -12,13 +12,14 @@ class AnbarDialog extends StatefulWidget {
 
 class _AnbarDialogState extends State<AnbarDialog> {
   final TextEditingController equipmentNameController = TextEditingController();
-  final TextEditingController brandController = TextEditingController();
-  final TextEditingController modelController = TextEditingController();
-  final TextEditingController macController = TextEditingController();
-  final TextEditingController portNumberController = TextEditingController();
-  final TextEditingController serialNumberController = TextEditingController();
   final TextEditingController numberController = TextEditingController();
-  final TextEditingController sizeLengthController = TextEditingController();
+
+  TextEditingController? brandController;
+  TextEditingController? modelController;
+  TextEditingController? macController;
+  TextEditingController? portNumberController;
+  TextEditingController? serialNumberController;
+  TextEditingController? sizeLengthController;
 
   final ApiService apiService = ApiService();
   String? selectedAnbar;
@@ -26,16 +27,15 @@ class _AnbarDialogState extends State<AnbarDialog> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void dispose() {
-    equipmentNameController.dispose();
-    brandController.dispose();
-    modelController.dispose();
-    macController.dispose();
-    portNumberController.dispose();
-    serialNumberController.dispose();
-    numberController.dispose();
-    sizeLengthController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+
+    brandController = TextEditingController();
+    modelController = TextEditingController();
+    macController = TextEditingController();
+    portNumberController = TextEditingController();
+    serialNumberController = TextEditingController();
+    sizeLengthController = TextEditingController();
   }
 
   @override
@@ -64,10 +64,7 @@ class _AnbarDialogState extends State<AnbarDialog> {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const Divider(
-                    endIndent: 10,
-                    indent: 10,
-                  ),
+                  const Divider(endIndent: 10, indent: 10),
                   DropdownButtonFormField<String>(
                     value: selectedAnbar,
                     decoration: const InputDecoration(
@@ -88,6 +85,12 @@ class _AnbarDialogState extends State<AnbarDialog> {
                         selectedAnbar = value;
                         warehouseId = int.tryParse(value!);
                       });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Bu sahə boş ola bilməz';
+                      }
+                      return null;
                     },
                   ),
                   const SizedBox(height: 16),
@@ -116,12 +119,6 @@ class _AnbarDialogState extends State<AnbarDialog> {
                             labelText: 'Marka',
                             border: OutlineInputBorder(),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Bu sahə boş ola bilməz';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ],
@@ -136,12 +133,6 @@ class _AnbarDialogState extends State<AnbarDialog> {
                             labelText: 'Model',
                             border: OutlineInputBorder(),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Bu sahə boş ola bilməz';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -152,12 +143,6 @@ class _AnbarDialogState extends State<AnbarDialog> {
                             labelText: 'Mac',
                             border: OutlineInputBorder(),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Bu sahə boş ola bilməz';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ],
@@ -176,12 +161,6 @@ class _AnbarDialogState extends State<AnbarDialog> {
                             labelText: 'Port sayı',
                             border: OutlineInputBorder(),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Bu sahə boş ola bilməz';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -192,12 +171,6 @@ class _AnbarDialogState extends State<AnbarDialog> {
                             labelText: 'Seriya nömrəsi',
                             border: OutlineInputBorder(),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Bu sahə boş ola bilməz';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ],
@@ -236,12 +209,6 @@ class _AnbarDialogState extends State<AnbarDialog> {
                             labelText: 'Ölçüsü',
                             border: OutlineInputBorder(),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Bu sahə boş ola bilməz';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ],
@@ -252,38 +219,41 @@ class _AnbarDialogState extends State<AnbarDialog> {
                       if (_formKey.currentState?.validate() ?? false) {
                         final item = AnbarItemModel(
                           equipmentName: equipmentNameController.text,
-                          brand: brandController.text,
-                          model: modelController.text,
-                          mac: macController.text,
+                          brand: brandController?.text ?? '',
+                          model: modelController?.text ?? '',
+                          mac: macController?.text ?? '',
                           portNumber:
-                              int.tryParse(portNumberController.text) ?? 0,
-                          serialNumber: serialNumberController.text,
+                              int.tryParse(portNumberController?.text ?? '') ??
+                                  0,
+                          serialNumber: serialNumberController?.text ?? '',
                           number: int.tryParse(numberController.text) ?? 0,
-                          sizeLength: sizeLengthController.text,
+                          sizeLength: sizeLengthController?.text ?? '',
                           warehouse: warehouseId,
                         );
 
                         try {
                           await apiService.postAnbarItem(item);
-                          Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('İdxal uğurla tamamlandı'),
                             ),
                           );
-                          equipmentNameController.clear();
-                          brandController.clear();
-                          modelController.clear();
-                          macController.clear();
-                          portNumberController.clear();
-                          serialNumberController.clear();
-                          numberController.clear();
-                          sizeLengthController.clear();
+                          Navigator.of(context).pop();
+                          // Navigator.of(context).pop();
+                          // Clear text fields
+                          // equipmentNameController.clear();
+                          // numberController.clear();
+                          // brandController?.clear();
+                          // modelController?.clear();
+                          // macController?.clear();
+                          // portNumberController?.clear();
+                          //   serialNumberController?.clear();
+                          //   sizeLengthController?.clear();
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               duration: const Duration(seconds: 3),
-                              content: Text(e.toString()),
+                              content: Text('Xəta: ${e.toString()}'),
                             ),
                           );
                         }
@@ -308,5 +278,18 @@ class _AnbarDialogState extends State<AnbarDialog> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    equipmentNameController.dispose();
+    numberController.dispose();
+    brandController?.dispose();
+    modelController?.dispose();
+    macController?.dispose();
+    portNumberController?.dispose();
+    serialNumberController?.dispose();
+    sizeLengthController?.dispose();
+    super.dispose();
   }
 }

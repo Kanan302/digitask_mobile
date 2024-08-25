@@ -44,10 +44,11 @@ class _ProblemTaskState extends State<ProblemTask> {
   late TextEditingController startTimeController;
   late TextEditingController endTimeController;
 
-  String? selectedTechnicalGroup;
   String? selectedStatus;
   List<String> selectedServices = [];
   bool isEditing = false;
+
+  List<String> selectedTechnicalGroups = [];
 
   final List<String> statusOptions = ['completed', 'inprogress', 'waiting'];
   final List<String> technicalGroupOptions = ['Qrup 1', 'Qrup 2'];
@@ -80,13 +81,15 @@ class _ProblemTaskState extends State<ProblemTask> {
         TextEditingController(text: widget.taskData.location ?? '');
     statusController =
         TextEditingController(text: widget.taskData.status ?? '');
-    groupController = TextEditingController(
-      text: widget.taskData.group != null &&
-              widget.taskData.group!.isNotEmpty &&
-              widget.taskData.group![0].group != null
-          ? widget.taskData.group![0].group
-          : '',
-    );
+    groupController = TextEditingController();
+
+    selectedTechnicalGroups =
+        widget.taskData.group != null && widget.taskData.group!.isNotEmpty
+            ? widget.taskData.group!
+                .map((group) => group.group)
+                .toList()
+                .cast<String>()
+            : [];
     noteController = TextEditingController(text: widget.taskData.note ?? '');
     dateController = TextEditingController(text: widget.taskData.date ?? '');
     startTimeController = TextEditingController(
@@ -143,24 +146,35 @@ class _ProblemTaskState extends State<ProblemTask> {
 
   Future<void> _updateTask() async {
     try {
-      final selectedGroup =
-          selectedTechnicalGroup ?? widget.taskData.group?.first.group ?? '';
-      final groupId = selectedGroup == 'Qrup 1' ? 1 : 2;
-      final groupData = groupId != null ? [groupId] : <int>[];
+      final List<int> groupIds = selectedTechnicalGroups
+          .map((group) {
+            if (group == 'Qrup 1') return 1;
+            if (group == 'Qrup 2') return 2;
+            return null;
+          })
+          .whereType<int>()
+          .toList();
+
+      final startTime = startTimeController.text.isNotEmpty
+          ? startTimeController.text
+          : widget.taskData.startTime ?? '';
+      final endTime = endTimeController.text.isNotEmpty
+          ? endTimeController.text
+          : widget.taskData.endTime ?? '';
 
       await TaskApi().updateTask(
         context: context,
         taskId: widget.taskId.toString(),
         fullName: fullNameController.text,
-        startTime: startTimeController.text,
-        endTime: endTimeController.text,
+        startTime: startTime,
+        endTime: endTime,
         registrationNumber: registrationNumberController.text,
         contactNumber: contactNumberController.text,
         location: locationController.text,
         status: statusController.text,
         note: noteController.text,
         date: dateController.text,
-        groupData: groupData,
+        groupData: groupIds,
         selectedServices: selectedServices,
         taskData: widget.taskData,
       );
@@ -217,24 +231,13 @@ class _ProblemTaskState extends State<ProblemTask> {
                 contactNumberController.text = taskData.contactNumber ?? '';
                 locationController.text = taskData.location ?? '';
                 selectedStatus ??= taskData.status;
-                statusController.text = selectedStatus ?? "";
+                statusController.text = selectedStatus ?? '';
                 noteController.text = taskData.note ?? '';
                 dateController.text = taskData.date ?? '';
-                groupController.text = (taskData.group != null &&
-                        taskData.group!.isNotEmpty &&
-                        taskData.group![0].group != null
-                    ? taskData.group![0].group
-                    : '')!;
-
-                // startTimeController.text = taskData.startTime ?? '-';
-                // endTimeController.text = taskData.endTime ?? '';
-
-                // List<String> selectedServices = [];
-                // if (taskData.isTv == true) selectedServices.add('Tv');
-                // if (taskData.isInternet == true) {
-                //   selectedServices.add('Internet');
-                // }
-                // if (taskData.isVoice == true) selectedServices.add('Voice');
+                groupController.text =
+                    taskData.group != null && taskData.group!.isNotEmpty
+                        ? taskData.group!.map((group) => group.group).join(', ')
+                        : '';
 
                 final availableServiceTypes =
                     _getAvailableServiceTypes(taskData);
@@ -362,29 +365,19 @@ class _ProblemTaskState extends State<ProblemTask> {
                               ),
                               const SizedBox(width: 20),
                               Expanded(
-                                child: DropdownWithIcon(
+                                child: MultiSelectWithIcon(
                                   labelText: 'Texniki qrup',
                                   icon: Icons.engineering_outlined,
-                                  value: technicalGroupOptions
-                                          .contains(groupController.text)
-                                      ? groupController.text
-                                      : null,
-                                  items: technicalGroupOptions,
-                                  onChanged: isAdmin
-                                      ? (String? newValue) {
-                                          setState(() {
-                                            selectedTechnicalGroup = newValue;
-                                            groupController.text =
-                                                newValue ?? '';
-                                          });
-                                        }
-                                      : null,
                                   isAdmin: isAdmin && isEditing,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Texniki qrup seçin';
-                                    }
-                                    return null;
+                                  emptyText: 'Texniki qrup seçin zəhmət olmasa',
+                                  options: technicalGroupOptions,
+                                  items: selectedTechnicalGroups,
+                                  onChanged: (List<String> value) {
+                                    setState(() {
+                                      selectedTechnicalGroups = value;
+                                      groupController.text =
+                                          selectedTechnicalGroups.join(', ');
+                                    });
                                   },
                                 ),
                               ),

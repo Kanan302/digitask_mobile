@@ -22,8 +22,6 @@ class ProfileTab extends StatefulWidget {
 }
 
 class _ProfileTabState extends State<ProfileTab> {
-
-
   @override
   void initState() {
     super.initState();
@@ -31,7 +29,6 @@ class _ProfileTabState extends State<ProfileTab> {
       context.read<MainNotifier>().checkAdmin();
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +74,9 @@ class _ProfileTabState extends State<ProfileTab> {
               return Column(
                 children: [
                   ProfileCardItem(
-                    onPressed: () {},
                     title: userModel.firstName ?? "User not found",
                     subtitle: userModel.email,
-                    trailingIcon: IconPath.pencil.toPathSvg,
+                    trailingIcon: IconPath.arrowright.toPathSvg,
                     onTap: () {
                       context.goNamed(AppRoutes.profileEdit.name,
                           extra: userModel);
@@ -90,20 +86,20 @@ class _ProfileTabState extends State<ProfileTab> {
                     height: 16,
                   ),
                   ProfileCardItem(
-                    onPressed: () {},
+                    onTap: () {},
                     title: "Bildirişlər",
                     isNotification: true,
                     leadingIcon: IconPath.profnoti.toPathSvg,
                     trailingIcon: IconPath.arrowright.toPathSvg,
                   ),
                   ProfileCardItem(
-                    onPressed: () {},
+                    onTap: () {},
                     title: "Dəstək",
                     leadingIcon: IconPath.more.toPathSvg,
                     trailingIcon: IconPath.arrowright.toPathSvg,
                   ),
                   ProfileCardItem(
-                    onPressed: () {},
+                    onTap: () {},
                     title: "Haqqında",
                     leadingIcon: IconPath.info.toPathSvg,
                     trailingIcon: IconPath.arrowright.toPathSvg,
@@ -112,7 +108,7 @@ class _ProfileTabState extends State<ProfileTab> {
                     isExit: true,
                     title: "Çıxış et",
                     leadingIcon: IconPath.logout.toPathSvg,
-                    onPressed: () {
+                    onTap: () {
                       showDialog(
                         context: context,
                         builder: (context) {

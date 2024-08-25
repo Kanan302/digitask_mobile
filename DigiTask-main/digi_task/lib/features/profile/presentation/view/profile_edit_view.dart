@@ -38,7 +38,7 @@ class _ProfileEditViewState extends State<ProfileEditView> {
               context.pop();
             },
             icon: SvgPicture.asset(IconPath.arrowleft.toPathSvg)),
-        title: Text('Profile edit', style: context.typography.subtitle2Medium),
+        title: Text('Profil redaktəsi', style: context.typography.subtitle2Medium),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),

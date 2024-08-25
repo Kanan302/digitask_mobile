@@ -27,10 +27,13 @@ class ApiService {
         print('Item imported successfully');
       } else {
         print('Failed to import item: ${response.statusCode}');
+        final responseData = response.data;
 
-        if (response.data is Map<String, dynamic> &&
-            response.data.containsKey('serial_number')) {
-          throw Exception(response.data['serial_number'][0]);
+        if (responseData is Map<String, dynamic>) {
+          final errorMessages = responseData['error_messages'] ?? {};
+          if (errorMessages.isNotEmpty) {
+            throw Exception('Validation errors: ${errorMessages.toString()}');
+          }
         }
       }
     } catch (e) {
@@ -38,6 +41,7 @@ class ApiService {
         print('Dio error: ${e.message}');
         if (e.response != null) {
           print('Error response: ${e.response?.data}');
+          print('Error response status: ${e.response?.statusCode}');
         }
 
         throw Exception(e.response?.data ?? 'An unknown error occurred');
@@ -48,4 +52,3 @@ class ApiService {
     }
   }
 }
-

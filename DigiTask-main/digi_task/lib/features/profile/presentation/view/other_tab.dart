@@ -17,7 +17,7 @@ class OtherTab extends StatelessWidget {
       child: Column(
         children: [
           ProfileCardItem(
-            onPressed: () {
+            onTap: () {
               context.goNamed(AppRoutes.profile.name);
             },
             title: "Profil",
@@ -30,7 +30,7 @@ class OtherTab extends StatelessWidget {
             height: 8,
           ),
           ProfileCardItem(
-            onPressed: () {
+            onTap: () {
               context.goNamed(AppRoutes.anbar.name);
             },
             title: "Anbar",
@@ -43,7 +43,7 @@ class OtherTab extends StatelessWidget {
             height: 8,
           ),
           ProfileCardItem(
-            onPressed: () {
+            onTap: () {
               context.goNamed(AppRoutes.isciler.name);
             },
             title: "İşçilər",

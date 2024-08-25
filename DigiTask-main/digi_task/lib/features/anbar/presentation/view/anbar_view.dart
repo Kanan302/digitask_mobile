@@ -122,7 +122,7 @@ class _AnbarViewState extends State<AnbarView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildHeaderText('Avadanlıq', flex: 3),
-                  _buildHeaderText('Marka', flex: 2),
+                  // _buildHeaderText('Marka', flex: 2),
                   _buildHeaderText('Model', flex: 2),
                   _buildHeaderText('Sayı', flex: 2),
                   _buildHeaderText('', flex: 1),
@@ -165,9 +165,9 @@ class _AnbarViewState extends State<AnbarView> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   _buildItemText(item.equipmentName, flex: 3),
-                                  _buildItemText(item.brand, flex: 2),
+                                  // _buildItemText(item.brand, flex: 2),
                                   _buildItemText(item.model,
-                                      flex: 2, align: TextAlign.center),
+                                      flex: 3, align: TextAlign.center),
                                   _buildItemText(item.number?.toString(),
                                       flex: 2, align: TextAlign.center),
                                   PopupMenuButton<String>(

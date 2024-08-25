@@ -10,7 +10,7 @@ class ProfileCardItem extends StatelessWidget {
     this.subtitle,
     this.trailingIcon,
     this.isNotification = false,
-    required this.onPressed,
+    
     this.isExit = false,
     this.onTap,
     this.sytle,
@@ -21,7 +21,7 @@ class ProfileCardItem extends StatelessWidget {
   final String? leadingIcon;
   final String? trailingIcon;
   final bool? isNotification;
-  final VoidCallback onPressed;
+  
   final VoidCallback? onTap;
 
   final bool? isExit;
@@ -34,7 +34,7 @@ class ProfileCardItem extends StatelessWidget {
       color: context.colors.neutralColor100,
       child: ListTile(
         shape: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-        onTap: onPressed,
+        onTap: onTap,
         contentPadding: subtitle != null
             ? const EdgeInsets.only(left: 16, right: 4, top: 8, bottom: 8)
             : const EdgeInsets.only(left: 19, right: 4, top: 5, bottom: 5),

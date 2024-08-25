@@ -32,8 +32,6 @@ class TaskApi {
     required BuildContext context,
     required String taskId,
     required String fullName,
-    required String startTime,
-    required String endTime,
     required String registrationNumber,
     required String contactNumber,
     required String location,
@@ -43,14 +41,14 @@ class TaskApi {
     required List<int> groupData,
     required List<String> selectedServices,
     required TaskModel taskData,
+    String? startTime,
+    String? endTime,
   }) async {
     try {
       final String uri = 'http://135.181.42.192/services/update_task/$taskId/';
 
       Map<String, dynamic> updateData = {
         "full_name": fullName,
-        "start_time": startTime,
-        "end_time": endTime,
         "registration_number": registrationNumber,
         "contact_number": contactNumber,
         "location": location,
@@ -62,6 +60,14 @@ class TaskApi {
         "date": date,
         "group": groupData,
       };
+
+      if (startTime != null && startTime.isNotEmpty) {
+        updateData["start_time"] = startTime;
+      }
+
+      if (endTime != null && endTime.isNotEmpty) {
+        updateData["end_time"] = endTime;
+      }
 
       final response = await _dio.patch(uri, data: updateData);
 
@@ -87,6 +93,7 @@ class TaskApi {
       if (e is DioException) {
         if (e.response != null) {
           errorMessage = 'Error updating task: ${e.response?.data}';
+          print('Error updating task: ${e.response?.data}');
         }
       }
       ScaffoldMessenger.of(context).showSnackBar(

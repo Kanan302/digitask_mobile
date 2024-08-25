@@ -268,13 +268,17 @@ class _IscilerViewState extends State<IscilerView> {
                 topRight: Radius.circular(8.0),
               ),
             ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                _selectedUserType ?? 'Bütün işçilər',
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.03),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  _selectedUserType ?? 'Bütün işçilər',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
