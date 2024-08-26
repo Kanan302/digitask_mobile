@@ -24,29 +24,18 @@ class MultiSelectWithIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8.0,
-        horizontal: 8.0,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             labelText,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           ),
           const SizedBox(height: 5),
           Row(
             children: [
-              if (icon != null)
-                Icon(
-                  icon,
-                  size: 24.0,
-                  color: Colors.blue,
-                ),
+              if (icon != null) Icon(icon, size: 24.0, color: Colors.blue),
               const SizedBox(width: 8),
               Expanded(
                 child: IgnorePointer(
@@ -64,6 +53,7 @@ class MultiSelectWithIcon extends StatelessWidget {
                         borderSide: BorderSide(color: Colors.grey),
                       ),
                     ),
+
                   ),
                 ),
               ),

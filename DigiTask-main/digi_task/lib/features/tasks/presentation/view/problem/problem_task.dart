@@ -46,13 +46,12 @@ class _ProblemTaskState extends State<ProblemTask> {
 
   String? selectedStatus;
   List<String> selectedServices = [];
-  bool isEditing = false;
-
   List<String> selectedTechnicalGroups = [];
 
+  bool isEditing = false;
+  final List<String> services = ['Tv', 'Internet', 'Voice'];
   final List<String> statusOptions = ['completed', 'inprogress', 'waiting'];
   final List<String> technicalGroupOptions = ['Qrup 1', 'Qrup 2'];
-  final List<String> services = ['Tv', 'Internet', 'Voice'];
 
   final List<Map<String, dynamic>> mockData = [
     {'icon': Icons.person_2_outlined, 'title': 'Ad və soyad:'},
@@ -70,7 +69,19 @@ class _ProblemTaskState extends State<ProblemTask> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MainNotifier>().checkAdmin();
     });
-
+    task.then((taskData) {
+      if (taskData != null) {
+        setState(() {
+          selectedTechnicalGroups =
+              taskData.group != null && taskData.group!.isNotEmpty
+                  ? taskData.group!
+                      .map((group) => group.group)
+                      .toList()
+                      .cast<String>()
+                  : [];
+        });
+      }
+    });
     fullNameController =
         TextEditingController(text: widget.taskData.fullName ?? '');
     registrationNumberController =
@@ -81,7 +92,6 @@ class _ProblemTaskState extends State<ProblemTask> {
         TextEditingController(text: widget.taskData.location ?? '');
     statusController =
         TextEditingController(text: widget.taskData.status ?? '');
-    groupController = TextEditingController();
 
     selectedTechnicalGroups =
         widget.taskData.group != null && widget.taskData.group!.isNotEmpty
@@ -90,6 +100,9 @@ class _ProblemTaskState extends State<ProblemTask> {
                 .toList()
                 .cast<String>()
             : [];
+
+    groupController =
+        TextEditingController(text: selectedTechnicalGroups.join(','));
     noteController = TextEditingController(text: widget.taskData.note ?? '');
     dateController = TextEditingController(text: widget.taskData.date ?? '');
     startTimeController = TextEditingController(
@@ -234,11 +247,8 @@ class _ProblemTaskState extends State<ProblemTask> {
                 statusController.text = selectedStatus ?? '';
                 noteController.text = taskData.note ?? '';
                 dateController.text = taskData.date ?? '';
-                groupController.text =
-                    taskData.group != null && taskData.group!.isNotEmpty
-                        ? taskData.group!.map((group) => group.group).join(', ')
-                        : '';
 
+                groupController.text = selectedTechnicalGroups.join(', ');
                 final availableServiceTypes =
                     _getAvailableServiceTypes(taskData);
                 final hasAvailableServices = availableServiceTypes.isNotEmpty;
@@ -369,7 +379,7 @@ class _ProblemTaskState extends State<ProblemTask> {
                                   labelText: 'Texniki qrup',
                                   icon: Icons.engineering_outlined,
                                   isAdmin: isAdmin && isEditing,
-                                  emptyText: 'Texniki qrup seçin zəhmət olmasa',
+                                  emptyText: 'Qrup seçin zəhmət olmasa',
                                   options: technicalGroupOptions,
                                   items: selectedTechnicalGroups,
                                   onChanged: (List<String> value) {
@@ -478,7 +488,7 @@ class _ProblemTaskState extends State<ProblemTask> {
       availableServiceTypes.add('Internet');
     }
     if (taskData.isTv == true && taskData.tv == null) {
-      availableServiceTypes.add('TV');
+      availableServiceTypes.add('Tv');
     }
     if (taskData.isVoice == true && taskData.voice == null) {
       availableServiceTypes.add('Voice');

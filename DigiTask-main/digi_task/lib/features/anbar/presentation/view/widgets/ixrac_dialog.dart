@@ -69,15 +69,19 @@ class _IxracDialogState extends State<IxracDialog> {
   Future<void> _submitForm() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    if (_selectedUserId != null) {
-      final isValidUser =
-          _userItems.any((user) => user['id'] == _selectedUserId);
-      if (!isValidUser) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Xəta: Seçilmiş işçi mövcud deyil.')),
-        );
-        return;
-      }
+    int filledFields = 0;
+    if (_selectedUserId != null) filledFields++;
+    if (_companyController.text.isNotEmpty) filledFields++;
+    if (_authorizedController.text.isNotEmpty) filledFields++;
+
+    if (filledFields < 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+                'Xahiş olunur üç sahədən birini doldurun: İşçi, Şirkətin adı, Səlahiyyətli şəxs.')),
+      );
+      return;
     }
 
     final postData = {
@@ -108,20 +112,9 @@ class _IxracDialogState extends State<IxracDialog> {
           const SnackBar(content: Text('Məlumatlar uğurla yeniləndi')),
         );
       } else {
-        if (response.data.toString().contains('Xətalı pk')) {
-          final invalidUserId = _selectedUserId ?? 'unknown';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Xəta: Seçilmiş işçi mövcud deyil. ID: $invalidUserId',
-              ),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Xəta: ${response.data}')),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Xəta: ${response.data}')),
+        );
       }
     } catch (e) {
       if (e is DioException) {
@@ -173,17 +166,8 @@ class _IxracDialogState extends State<IxracDialog> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    final selectedUser =
-                        _userItems.firstWhere((user) => user['id'] == value);
-
-                    _selectedUserId = selectedUser['id'];
+                    _selectedUserId = value;
                   });
-                },
-                validator: (value) {
-                  if (value == null) {
-                    return 'Bu sahə boş ola bilməz';
-                  }
-                  return null;
                 },
               ),
               const SizedBox(height: 15),
@@ -193,12 +177,6 @@ class _IxracDialogState extends State<IxracDialog> {
                   labelText: 'Şirkətin adı',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Bu sahə boş ola bilməz';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 15),
               TextFormField(
@@ -207,12 +185,6 @@ class _IxracDialogState extends State<IxracDialog> {
                   labelText: 'Səlahiyyətli şəxs',
                   border: OutlineInputBorder(),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Bu sahə boş ola bilməz';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 15),
               TextFormField(

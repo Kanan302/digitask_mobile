@@ -239,16 +239,7 @@ class _AnbarDialogState extends State<AnbarDialog> {
                             ),
                           );
                           Navigator.of(context).pop();
-                          // Navigator.of(context).pop();
-                          // Clear text fields
-                          // equipmentNameController.clear();
-                          // numberController.clear();
-                          // brandController?.clear();
-                          // modelController?.clear();
-                          // macController?.clear();
-                          // portNumberController?.clear();
-                          //   serialNumberController?.clear();
-                          //   sizeLengthController?.clear();
+
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -293,3 +284,5 @@ class _AnbarDialogState extends State<AnbarDialog> {
     super.dispose();
   }
 }
+
+

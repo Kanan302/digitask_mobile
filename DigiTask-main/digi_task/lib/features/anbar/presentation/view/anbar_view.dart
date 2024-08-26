@@ -2,6 +2,7 @@ import 'package:digi_task/core/constants/theme/theme_ext.dart';
 import 'package:digi_task/features/anbar/data/model/anbar_item_model.dart';
 import 'package:digi_task/features/anbar/presentation/notifier/anbar_notifier.dart';
 import 'package:digi_task/features/anbar/presentation/notifier/anbar_state.dart';
+import 'package:digi_task/features/anbar/presentation/view/widgets/anbar_details_dialog.dart';
 import 'package:digi_task/features/anbar/presentation/view/widgets/idxal_dialog.dart';
 import 'package:digi_task/features/anbar/presentation/view/widgets/ixrac_dialog.dart';
 import 'package:digi_task/features/anbar/presentation/view/widgets/select_dropdown_field.dart';
@@ -32,12 +33,6 @@ class _AnbarViewState extends State<AnbarView> {
           false;
       return matchesWarehouse && matchesSearch;
     }).toList();
-  }
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
   }
 
   Widget _buildHeaderText(String text, {int flex = 1}) {
@@ -157,61 +152,72 @@ class _AnbarViewState extends State<AnbarView> {
                               height: 0,
                             ),
                             const SizedBox(height: 7),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16.0, right: 16, top: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  _buildItemText(item.equipmentName, flex: 3),
-                                  // _buildItemText(item.brand, flex: 2),
-                                  _buildItemText(item.model,
-                                      flex: 3, align: TextAlign.center),
-                                  _buildItemText(item.number?.toString(),
-                                      flex: 2, align: TextAlign.center),
-                                  PopupMenuButton<String>(
-                                    onSelected: (String value) async {
-                                      if (value == 'idxal') {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return IdxalDialog(itemId: item.id);
-                                          },
-                                        );
-                                      } else if (value == 'ixrac') {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return IxracDialog(
-                                              itemId: item.id,
-                                              maxNumber: item.number ?? 0,
-                                            );
-                                          },
-                                        );
-                                      }
-                                    },
-                                    icon: const Icon(Icons.more_vert),
-                                    itemBuilder: (BuildContext context) => [
-                                      const PopupMenuItem<String>(
-                                        value: 'ixrac',
-                                        child: Row(
-                                          children: [
-                                            Text('İxrac'),
-                                          ],
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AnbarDetailsDialog(item: item);
+                                  },
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16.0, right: 16, top: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildItemText(item.equipmentName, flex: 3),
+                                    // _buildItemText(item.brand, flex: 2),
+                                    _buildItemText(item.model,
+                                        flex: 3, align: TextAlign.center),
+                                    _buildItemText(item.number?.toString(),
+                                        flex: 2, align: TextAlign.center),
+                                    PopupMenuButton<String>(
+                                      onSelected: (String value) async {
+                                        if (value == 'idxal') {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return IdxalDialog(
+                                                  itemId: item.id);
+                                            },
+                                          );
+                                        } else if (value == 'ixrac') {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return IxracDialog(
+                                                itemId: item.id,
+                                                maxNumber: item.number ?? 0,
+                                              );
+                                            },
+                                          );
+                                        }
+                                      },
+                                      icon: const Icon(Icons.more_vert),
+                                      itemBuilder: (BuildContext context) => [
+                                        const PopupMenuItem<String>(
+                                          value: 'ixrac',
+                                          child: Row(
+                                            children: [
+                                              Text('İxrac'),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      const PopupMenuItem<String>(
-                                        value: 'idxal',
-                                        child: Row(
-                                          children: [
-                                            Text('İdxal'),
-                                          ],
+                                        const PopupMenuItem<String>(
+                                          value: 'idxal',
+                                          child: Row(
+                                            children: [
+                                              Text('İdxal'),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -228,5 +234,11 @@ class _AnbarViewState extends State<AnbarView> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 }
